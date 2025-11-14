@@ -1,5 +1,5 @@
 import prisma from "@/server/prisma";
-import { SESSION_COOKIE_NAME, SESSION_COOKIE_PATH } from "@/server/session";
+import { deleteSession, SESSION_COOKIE_NAME } from "@/server/session";
 import type { Handle } from "@sveltejs/kit";
 
 export const handle: Handle = async ({ event, resolve }) => {
@@ -8,7 +8,15 @@ export const handle: Handle = async ({ event, resolve }) => {
   if (sessionId) {
     const session = await prisma.session.findUnique({
       where: { id: sessionId },
-      include: { user: true },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            full_name: true,
+          },
+        },
+      },
     });
 
     if (session && session.expiresAt > new Date()) {
@@ -18,7 +26,7 @@ export const handle: Handle = async ({ event, resolve }) => {
         full_name: session.user.full_name,
       };
     } else {
-      event.cookies.delete(SESSION_COOKIE_NAME, { path: SESSION_COOKIE_PATH });
+      deleteSession(event.cookies);
     }
   }
 
