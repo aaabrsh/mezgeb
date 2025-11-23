@@ -10,7 +10,6 @@
   import { Input } from "@/components/ui/input";
   import { Label } from "@/components/ui/label";
   import { Routes } from "@/data/routes";
-  import type { PageProps } from "./$types";
   import { enhance } from "$app/forms";
   import { fade } from "svelte/transition";
 
@@ -23,9 +22,9 @@
   <Card class="flex w-[90%] max-w-sm flex-col gap-6">
     <CardHeader class="text-center">
       <CardTitle class="text-xl">Welcome</CardTitle>
-      <CardDescription
-        >Enter your email and password below to login to your account</CardDescription
-      >
+      <CardDescription>
+        Enter your email and password below to login to your account
+      </CardDescription>
     </CardHeader>
 
     <form
@@ -59,7 +58,9 @@
             class={form?.errors?.email ? "border-red-500" : ""}
           />
           {#if form?.errors?.email}
-            <p class="text-xs text-red-500">{form.errors.email?.[0]}</p>
+            <p class="text-xs text-red-500" transition:fade>
+              {form.errors.email?.[0]}
+            </p>
           {/if}
         </div>
 
@@ -80,12 +81,17 @@
             class={form?.errors?.password ? "border-red-500" : ""}
           />
           {#if form?.errors?.password}
-            <p class="text-xs text-red-500">
+            <p class="text-xs text-red-500" transition:fade>
               {form.errors.password?.[0]}
             </p>
           {/if}
         </div>
-        <Button type="submit" class="cursor-pointer" disabled={pending}>
+        <Button
+          type="submit"
+          class="cursor-pointer"
+          loading={pending}
+          disabled={pending}
+        >
           {#if pending}
             <span class="animate-pulse">Logging in...</span>
           {:else}
@@ -97,8 +103,10 @@
           Don't have an account?
           <a
             href={Routes.signup}
-            class="underline underline-offset-4 text-cyan-500">Sign up</a
+            class="underline underline-offset-4 text-cyan-500"
           >
+            Sign up
+          </a>
         </div>
       </CardContent>
     </form>

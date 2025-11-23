@@ -18,17 +18,17 @@ const loginSchema = z.object({
     .trim()
     .min(1, "Email is required"),
   password: z
-    .string({ error: "Password is required" })
+    .string()
     .trim()
+    .min(1, "Password is required")
     .min(6, "Password must be at least 6 characters long"),
 });
 
 export type LoginFormData = z.infer<typeof loginSchema>;
 
 export interface LoginFormFail {
-  message?: string;
+  message: string;
   errors?: Partial<Record<keyof LoginFormData, string[]>>;
-  values?: Partial<LoginFormData>;
 }
 
 export const actions: Actions = {
@@ -45,9 +45,8 @@ export const actions: Actions = {
       if (!parsed.success) {
         const errors = z.flattenError(parsed.error);
         return fail(400, {
-          message: "Invalid form submission",
+          message: "Invalid data provided",
           errors: errors.fieldErrors,
-          values: formData,
         });
       }
 
