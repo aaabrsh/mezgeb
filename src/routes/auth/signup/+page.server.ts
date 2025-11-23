@@ -1,55 +1,89 @@
 import { Routes } from "@/data/routes.js";
 import prisma from "@/server/prisma";
 import { createSession } from "@/server/session.js";
-import { fail, redirect } from "@sveltejs/kit";
+import {
+  fail,
+  isHttpError,
+  isRedirect,
+  redirect,
+  type ActionFailure,
+} from "@sveltejs/kit";
 import bcrypt from "bcrypt";
+import z from "zod";
+
+const signupSchema = z
+  .object({
+    full_name: z.string().trim().min(1, "User's full name is required"),
+    email: z
+      .email("Please enter a valid email address")
+      .trim()
+      .min(1, "Email is required"),
+    password: z
+      .string()
+      .trim()
+      .min(1, "Password is required")
+      .min(6, "Password must be at least 6 characters long"),
+    confirm_password: z.string().optional(),
+  })
+  .refine((data) => data.password === data.confirm_password, {
+    message: "Passwords do not match",
+    path: ["confirm_password"],
+  });
+
+export type SignupFormData = z.infer<typeof signupSchema>;
+
+export interface SignupFormFail {
+  message?: string;
+  errors?: Partial<Record<keyof SignupFormData, string[]>>;
+}
 
 export const actions = {
-  default: async ({ request, cookies }) => {
-    const data = await request.formData();
-    const full_name = data.get("full_name")?.toString();
-    const email = data.get("email")?.toString();
-    const password = data.get("password")?.toString();
-    const confirm_password = data.get("confirm_password")?.toString();
+  default: async ({
+    request,
+    cookies,
+  }): Promise<ActionFailure<SignupFormFail> | void> => {
+    try {
+      const data = await request.formData();
+      const formData = Object.fromEntries(data);
+      const parsed = signupSchema.safeParse(formData);
 
-    if (!email) {
-      return fail(400, { message: "Email is required" });
-    }
+      if (!parsed.success) {
+        const errors = z.flattenError(parsed.error);
+        return fail(400, {
+          message: "Invalid data provided",
+          errors: errors.fieldErrors,
+        });
+      }
 
-    if (!full_name) {
-      return fail(400, { message: "User's full name is required" });
-    }
+      const { full_name, email, password } = parsed.data;
 
-    if (!password) {
-      return fail(400, { message: "Password is required" });
-    }
+      // check duplicate user
+      const existingUser = await prisma.user.findUnique({ where: { email } });
+      if (existingUser) {
+        return fail(400, { message: "User already exists" });
+      }
 
-    if (password.length < 6) {
-      return fail(400, {
-        message: "Password must be at least 6 characters long",
+      // create user
+      const hashed = await bcrypt.hash(password, 10);
+      const user = await prisma.user.create({
+        data: { full_name, email, password: hashed },
+      });
+
+      // create user session and set cookie
+      await createSession(user.id, cookies);
+
+      // redirect to home page after successful signup
+      throw redirect(302, Routes.home);
+    } catch (error) {
+      // let SvelteKit handle redirects & HTTP errors
+      if (isRedirect(error) || isHttpError(error)) {
+        throw error;
+      }
+
+      console.log("Signup error: ", error);
+      return fail(500, {
+        message: "something went wrong, please try again later",
       });
     }
-
-    if (password !== confirm_password) {
-      return fail(400, { message: "Passwords do not match" });
-    }
-
-    // check duplicate user
-    const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) {
-      return fail(400, { message: "User already exists" });
-    }
-
-    // create user
-    const hashed = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({
-      data: { full_name, email, password: hashed },
-    });
-
-    // create user session and set cookie
-    await createSession(user.id, cookies);
-
-    // redirect to home page after successful signup
-    throw redirect(302, Routes.home);
   },
 };
