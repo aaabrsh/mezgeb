@@ -67,7 +67,7 @@ export const actions: Actions = {
       // create user session and set cookie
       await createSession(user.id, cookies);
 
-      return redirect(302, Routes.home);
+      throw redirect(302, Routes.home);
     } catch (error) {
       // let SvelteKit handle redirects & HTTP errors
       if (isRedirect(error) || isHttpError(error)) {
