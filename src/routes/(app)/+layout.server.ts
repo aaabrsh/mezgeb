@@ -7,7 +7,5 @@ export const load = async ({ locals }) => {
     redirect(302, Routes.login);
   }
 
-  return {
-    user: locals.user,
-  };
+  return { user: locals.user };
 };

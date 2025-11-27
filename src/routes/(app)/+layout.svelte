@@ -1,0 +1,19 @@
+<script lang="ts">
+  import { Routes } from "@/data/routes";
+
+  let { children, data } = $props();
+
+  let user = $derived(data.user);
+</script>
+
+<nav>
+  {#if user}
+    <p>Logged in as {user.email}, {user.full_name}</p>
+    <form method="POST" action={Routes.logout}><button>Logout</button></form>
+  {:else}
+    <a href={Routes.login}>Login</a>
+    <a href={Routes.signup}>Sign up</a>
+  {/if}
+</nav>
+
+{@render children()}
