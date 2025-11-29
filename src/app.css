@@ -188,7 +188,7 @@
 @layer base {
   * {
     font-family: var(--font-family);
-    @apply border-border outline-ring/50 text-foreground;
+    @apply border-border outline-ring/50;
   }
 
   body {
