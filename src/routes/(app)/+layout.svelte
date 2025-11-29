@@ -2,6 +2,7 @@
   import Button from "@/components/ui/button/button.svelte";
   import ThemeToggle from "@/components/ui/theme-toggle/theme-toggle.svelte";
   import { Routes } from "@/data/routes";
+  import { page } from "$app/state";
 
   let { children, data } = $props();
 
@@ -15,8 +16,14 @@
     <div class="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
       <!-- Left side: Logo + Title -->
       <div class="flex items-center gap-3">
-        <a class="hover:underline text-md" href={Routes.home}>Home</a>
-        <a class="hover:underline text-md" href={Routes.currencies}>
+        <a
+          class={page.url.pathname === Routes.home ? "active" : ""}
+          href={Routes.home}>Home</a
+        >
+        <a
+          class={page.url.pathname === Routes.currencies ? "active" : ""}
+          href={Routes.currencies}
+        >
           Currencies
         </a>
       </div>
@@ -24,7 +31,7 @@
       <!-- Right side: User / Actions -->
       <div class="flex items-center gap-6">
         <div class="flex flex-col">
-          <p class="text-md opacity-90">
+          <p class="text-base font-semibold opacity-90">
             {user.full_name}
           </p>
           <p class="text-sm opacity-70">{user.email}</p>
@@ -44,3 +51,19 @@
     {@render children()}
   </main>
 </div>
+
+<style lang="postcss">
+  @reference "../../app.css";
+
+  a {
+    @apply text-sm font-semibold opacity-60;
+  }
+
+  a:hover {
+    @apply text-primary opacity-100;
+  }
+
+  a.active {
+    @apply pb-1 border-b-8 border-b-primary text-primary text-base opacity-100;
+  }
+</style>
