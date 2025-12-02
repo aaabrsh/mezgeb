@@ -55,13 +55,8 @@
             name="email"
             type="email"
             placeholder="email@example.com"
-            class={form?.errors?.email ? "border-red-500" : ""}
+            error={form?.errors?.email?.[0]}
           />
-          {#if form?.errors?.email}
-            <p class="text-xs text-red-500" transition:fade>
-              {form.errors.email?.[0]}
-            </p>
-          {/if}
         </div>
 
         <div class="grid gap-2">
@@ -78,13 +73,8 @@
             id="password"
             name="password"
             type="password"
-            class={form?.errors?.password ? "border-red-500" : ""}
+            error={form?.errors?.password?.[0]}
           />
-          {#if form?.errors?.password}
-            <p class="text-xs text-red-500" transition:fade>
-              {form.errors.password?.[0]}
-            </p>
-          {/if}
         </div>
         <Button
           type="submit"

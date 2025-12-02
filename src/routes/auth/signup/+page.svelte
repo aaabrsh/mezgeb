@@ -54,13 +54,8 @@
           <Input
             id="full_name"
             name="full_name"
-            class={form?.errors?.full_name ? "border-red-500" : ""}
+            error={form?.errors?.full_name?.[0]}
           />
-          {#if form?.errors?.full_name}
-            <p class="text-xs text-red-500" transition:fade>
-              {form.errors.full_name?.[0]}
-            </p>
-          {/if}
         </div>
 
         <div class="grid gap-2">
@@ -69,13 +64,8 @@
             id="email"
             name="email"
             type="email"
-            class={form?.errors?.email ? "border-red-500" : ""}
+            error={form?.errors?.email?.[0]}
           />
-          {#if form?.errors?.email}
-            <p class="text-xs text-red-500" transition:fade>
-              {form.errors.email?.[0]}
-            </p>
-          {/if}
         </div>
 
         <div class="grid gap-2">
@@ -84,13 +74,8 @@
             id="password"
             name="password"
             type="password"
-            class={form?.errors?.password ? "border-red-500" : ""}
+            error={form?.errors?.password?.[0]}
           />
-          {#if form?.errors?.password}
-            <p class="text-xs text-red-500" transition:fade>
-              {form.errors.password?.[0]}
-            </p>
-          {/if}
         </div>
 
         <div class="grid gap-2">
@@ -104,13 +89,8 @@
             id="confirm_password"
             name="confirm_password"
             type="password"
-            class={form?.errors?.confirm_password ? "border-red-500" : ""}
+            error={form?.errors?.confirm_password?.[0]}
           />
-          {#if form?.errors?.confirm_password}
-            <p class="text-xs text-red-500" transition:fade>
-              {form.errors.confirm_password?.[0]}
-            </p>
-          {/if}
         </div>
 
         <Button
