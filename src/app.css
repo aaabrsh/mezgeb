@@ -29,7 +29,12 @@
   --neutral-100: oklch(0.97 0.01 255);
   --neutral-200: oklch(0.93 0.01 255);
   --neutral-300: oklch(0.88 0.02 255);
+  --neutral-400: oklch(0.80 0.02 255);
+  --neutral-500: oklch(0.72 0.025 255);
+  --neutral-600: oklch(0.60 0.03 255);
+  --neutral-700: oklch(0.45 0.03 255);
   --neutral-800: oklch(0.32 0.03 255); /* soft charcoal, not black */
+  --neutral-900: oklch(0.25 0.03 255); /* deeper charcoal, still not black */
 
   /* fonts */
   --font-family: "Jost", "Roboto", "Inter", -apple-system, BlinkMacSystemFont,
@@ -179,6 +184,15 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-neutral-100: var(--neutral-100);
+  --color-neutral-200: var(--neutral-200);
+  --color-neutral-300: var(--neutral-300);
+  --color-neutral-400: var(--neutral-400);
+  --color-neutral-500: var(--neutral-500);
+  --color-neutral-600: var(--neutral-600);
+  --color-neutral-700: var(--neutral-700);
+  --color-neutral-800: var(--neutral-800);
+  --color-neutral-900: var(--neutral-900);
 }
 
 /* -----------------------------------------
