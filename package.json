@@ -5,7 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "npx prisma generate && vite build",
+		"build": "npx prisma generate && npm run seed && vite build",
+		"seed": "npx tsx prisma/seed.ts",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
