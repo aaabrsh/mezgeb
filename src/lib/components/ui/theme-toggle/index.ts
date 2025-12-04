@@ -1,3 +1,7 @@
 import Root from "./theme-toggle.svelte";
 
-export { Root };
+export {
+  Root,
+  //
+  Root as ThemeToggle,
+};

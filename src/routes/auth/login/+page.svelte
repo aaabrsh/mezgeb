@@ -12,6 +12,7 @@
   import { Routes } from "@/data/routes";
   import { enhance } from "$app/forms";
   import { fade } from "svelte/transition";
+  import { FormGroup } from "@/components/ui/form-group";
 
   const { form } = $props();
 
@@ -48,7 +49,7 @@
           </div>
         {/if}
 
-        <div class="grid gap-2">
+        <FormGroup>
           <Label for="email">email</Label>
           <Input
             id="email"
@@ -57,9 +58,9 @@
             placeholder="email@example.com"
             error={form?.errors?.email?.[0]}
           />
-        </div>
+        </FormGroup>
 
-        <div class="grid gap-2">
+        <FormGroup>
           <div class="flex items-center">
             <Label for="password">Password</Label>
             <!-- <a
@@ -75,7 +76,7 @@
             type="password"
             error={form?.errors?.password?.[0]}
           />
-        </div>
+        </FormGroup>
         <Button
           type="submit"
           class="cursor-pointer"

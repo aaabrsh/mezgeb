@@ -1,6 +1,6 @@
 <script lang="ts">
   import Button from "@/components/ui/button/button.svelte";
-  import ThemeToggle from "@/components/ui/theme-toggle/theme-toggle.svelte";
+  import { ThemeToggle } from "@/components/ui/theme-toggle";
   import { Routes } from "@/data/routes";
   import { page } from "$app/state";
 

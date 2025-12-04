@@ -13,6 +13,7 @@
   import type { PageProps } from "./$types";
   import { enhance } from "$app/forms";
   import { fade } from "svelte/transition";
+  import { FormGroup } from "@/components/ui/form-group";
 
   const { data, form }: PageProps = $props();
 
@@ -49,16 +50,16 @@
           </div>
         {/if}
 
-        <div class="grid gap-2">
+        <FormGroup>
           <Label for="full_name">full name</Label>
           <Input
             id="full_name"
             name="full_name"
             error={form?.errors?.full_name?.[0]}
           />
-        </div>
+        </FormGroup>
 
-        <div class="grid gap-2">
+        <FormGroup>
           <Label for="email">email</Label>
           <Input
             id="email"
@@ -66,9 +67,9 @@
             type="email"
             error={form?.errors?.email?.[0]}
           />
-        </div>
+        </FormGroup>
 
-        <div class="grid gap-2">
+        <FormGroup>
           <Label for="password">Password</Label>
           <Input
             id="password"
@@ -76,9 +77,9 @@
             type="password"
             error={form?.errors?.password?.[0]}
           />
-        </div>
+        </FormGroup>
 
-        <div class="grid gap-2">
+        <FormGroup>
           <Label
             for="confirm_password"
             class={form?.errors?.confirm_password ? "border-red-500" : ""}
@@ -91,7 +92,7 @@
             type="password"
             error={form?.errors?.confirm_password?.[0]}
           />
-        </div>
+        </FormGroup>
 
         <Button
           type="submit"
