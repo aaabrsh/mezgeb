@@ -15,19 +15,156 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  email     String    @unique()
-  password  String
-  full_name String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  Session   Session[]
+  id             String     @id @default(cuid())
+  email          String     @unique()
+  password       String
+  full_name      String
+  sessions       Session[]
+  activities     Activity[]
+  money_accounts Account[]
+  currencies     Currency[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Session {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
   expiresAt DateTime
   createdAt DateTime @default(now())
+}
+
+model Activity {
+  id                   String       @id @default(cuid())
+  user                 User         @relation(fields: [userId], references: [id])
+  userId               String
+  type                 ActivityType
+  categories           Category[]
+  notes                String?
+  sent                 Sent?
+  received             Received?
+  moved                Moved?
+  converted            Converted?
+  sourceAccount        Account?     @relation("SourceAccount", fields: [sourceAccountId], references: [id])
+  sourceAccountId      String?
+  destinationAccount   Account?     @relation("DestinationAccount", fields: [destinationAccountId], references: [id])
+  destinationAccountId String?
+  activityDate         DateTime     @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Sent {
+  id         String   @id @default(cuid())
+  activity   Activity @relation(fields: [activityId], references: [id])
+  activityId String   @unique
+  amount     Decimal
+  currency   Currency @relation(fields: [currencyId], references: [id])
+  currencyId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Received {
+  id         String   @id @default(cuid())
+  activity   Activity @relation(fields: [activityId], references: [id])
+  activityId String   @unique
+  amount     Decimal
+  currency   Currency @relation(fields: [currencyId], references: [id])
+  currencyId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Moved {
+  id         String   @id @default(cuid())
+  activity   Activity @relation(fields: [activityId], references: [id])
+  activityId String   @unique
+  amount     Decimal
+  currency   Currency @relation(fields: [currencyId], references: [id])
+  currencyId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Converted {
+  id             String   @id @default(cuid())
+  activity       Activity @relation(fields: [activityId], references: [id])
+  activityId     String   @unique
+  // "from" fields
+  fromAmount     Decimal
+  fromCurrency   Currency @relation("fromCurrency", fields: [fromCurrencyId], references: [id])
+  fromCurrencyId String
+  // "to" fields
+  toAmount       Decimal
+  toCurrency     Currency @relation("toCurrency", fields: [toCurrencyId], references: [id])
+  toCurrencyId   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id             String      @id @default(cuid())
+  user           User        @relation(fields: [userId], references: [id])
+  userId         String
+  name           String
+  type           AccountType
+  description    String?
+  balance        Decimal     @default(0)
+  activitiesFrom Activity[]  @relation("SourceAccount")
+  activitiesTo   Activity[]  @relation("DestinationAccount")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Currency {
+  id            String      @id @default(cuid())
+  abbrev        String
+  symbol        String?
+  name          String?
+  user          User?       @relation(fields: [userId], references: [id])
+  userId        String? // null for global currencies
+  convertedFrom Converted[] @relation("fromCurrency")
+  convertedTo   Converted[] @relation("toCurrency")
+  Sent          Sent[]
+  Received      Received[]
+  Moved         Moved[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, abbrev]) // Prevent duplicate abbreviations per user
+}
+
+model Category {
+  name       String     @id
+  color      String?
+  activities Activity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+//  ============== ENUMS ==============
+
+enum ActivityType {
+  RECEIVE
+  SEND
+  MOVE
+  CONVERT
+}
+
+enum AccountType {
+  BANK
+  CRYPTO
+  CASH
 }
