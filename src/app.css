@@ -73,7 +73,7 @@
   --muted: var(--neutral-200);
   --muted-foreground: var(--neutral-800);
 
-  --destructive: oklch(0.55 0.21 27);
+  --destructive: oklch(64.724% 0.22582 26.902);
   --border: var(--neutral-300);
   --input: var(--neutral-300);
   --ring: oklch(0.75 0.07 210);
