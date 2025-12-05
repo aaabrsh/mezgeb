@@ -19,8 +19,9 @@ import {
   badRequestError,
   notFoundError,
   serverError,
+  skipRedirectAndHttpErrors,
 } from "@/utils/error-responses.js";
-import { isHttpError, isRedirect, redirect, type Actions } from "@sveltejs/kit";
+import { redirect, type Actions } from "@sveltejs/kit";
 import z from "zod";
 
 export const load = async ({ locals }) => {
@@ -73,10 +74,7 @@ export const actions: Actions = {
         currency: newCurrency,
       };
     } catch (error) {
-      if (isRedirect(error) || isHttpError(error)) {
-        throw error;
-      }
-
+      skipRedirectAndHttpErrors(error);
       console.log("currency creation error: ", error);
       return serverError();
     }
@@ -133,10 +131,7 @@ export const actions: Actions = {
         currency: updatedCurrency,
       };
     } catch (error) {
-      if (isRedirect(error) || isHttpError(error)) {
-        throw error;
-      }
-
+      skipRedirectAndHttpErrors(error);
       console.log("currency updation error: ", error);
       return serverError();
     }
@@ -155,10 +150,7 @@ export const actions: Actions = {
 
       await deleteCurrency(currencyId, user.id);
     } catch (error) {
-      if (isRedirect(error) || isHttpError(error)) {
-        throw error;
-      }
-
+      skipRedirectAndHttpErrors(error);
       console.log("currency deletion error: ", error);
       return serverError();
     }

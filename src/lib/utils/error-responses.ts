@@ -1,22 +1,22 @@
-import { fail } from "@sveltejs/kit";
+import { fail, isHttpError, isRedirect } from "@sveltejs/kit";
 
-export const serverError = <T extends Record<string, any>>(
-  message?: string,
-  data?: T
-) =>
+type ErrorResponse = { message: string } & Record<string, any>;
+
+export const serverError = <T extends ErrorResponse>(data?: T) =>
   fail(500, {
-    message: message || "something went wrong, please try again later",
     ...data,
+    message: data?.message || "something went wrong, please try again later",
   });
 
-export const notFoundError = <
-  T extends { message: string } & Record<string, any>
->(
-  data: T
-) => fail(404, data);
+export const notFoundError = <T extends ErrorResponse>(data: T) =>
+  fail(404, data);
 
-export const badRequestError = <
-  T extends { message: string } & Record<string, any>
->(
-  data: T
-) => fail(404, data);
+export const badRequestError = <T extends ErrorResponse>(data: T) =>
+  fail(404, data);
+
+export const skipRedirectAndHttpErrors = (error: any) => {
+  // throw redirects & HTTP errors so that SvelteKit handles them in its own way
+  if (isRedirect(error) || isHttpError(error)) {
+    throw error;
+  }
+};

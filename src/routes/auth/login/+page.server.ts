@@ -2,13 +2,11 @@ import { Routes } from "@/data/routes.js";
 import prisma from "@/server/prisma.js";
 import { createSession } from "@/server/session.server.js";
 import {
-  fail,
-  isHttpError,
-  isRedirect,
-  redirect,
-  type ActionFailure,
-  type Actions,
-} from "@sveltejs/kit";
+  badRequestError,
+  serverError,
+  skipRedirectAndHttpErrors,
+} from "@/utils/error-responses";
+import { redirect, type ActionFailure, type Actions } from "@sveltejs/kit";
 import bcrypt from "bcrypt";
 import z from "zod";
 
@@ -44,7 +42,7 @@ export const actions: Actions = {
 
       if (!parsed.success) {
         const errors = z.flattenError(parsed.error);
-        return fail(400, {
+        return badRequestError({
           message: "Invalid data provided",
           errors: errors.fieldErrors,
         });
@@ -55,13 +53,13 @@ export const actions: Actions = {
       // get user by email
       const user = await prisma.user.findUnique({ where: { email } });
       if (!user) {
-        return fail(400, { message: "Invalid credentials" });
+        return badRequestError({ message: "Invalid credentials" });
       }
 
       // verify password
       const valid = await bcrypt.compare(password, user.password);
       if (!valid) {
-        return fail(400, { message: "Invalid credentials" });
+        return badRequestError({ message: "Invalid credentials" });
       }
 
       // create user session and set cookie
@@ -70,14 +68,10 @@ export const actions: Actions = {
       throw redirect(302, Routes.home);
     } catch (error) {
       // let SvelteKit handle redirects & HTTP errors
-      if (isRedirect(error) || isHttpError(error)) {
-        throw error;
-      }
+      skipRedirectAndHttpErrors(error);
 
       console.log("Login error: ", error);
-      return fail(500, {
-        message: "something went wrong, please try again later",
-      });
+      return serverError();
     }
   },
 };

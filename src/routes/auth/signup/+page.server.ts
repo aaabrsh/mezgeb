@@ -2,12 +2,11 @@ import { Routes } from "@/data/routes.js";
 import prisma from "@/server/prisma";
 import { createSession } from "@/server/session.server.js";
 import {
-  fail,
-  isHttpError,
-  isRedirect,
-  redirect,
-  type ActionFailure,
-} from "@sveltejs/kit";
+  badRequestError,
+  serverError,
+  skipRedirectAndHttpErrors,
+} from "@/utils/error-responses.js";
+import { redirect, type ActionFailure } from "@sveltejs/kit";
 import bcrypt from "bcrypt";
 import z from "zod";
 
@@ -49,7 +48,7 @@ export const actions = {
 
       if (!parsed.success) {
         const errors = z.flattenError(parsed.error);
-        return fail(400, {
+        return badRequestError({
           message: "Invalid data provided",
           errors: errors.fieldErrors,
         });
@@ -60,7 +59,7 @@ export const actions = {
       // check duplicate user
       const existingUser = await prisma.user.findUnique({ where: { email } });
       if (existingUser) {
-        return fail(400, { message: "User already exists" });
+        return badRequestError({ message: "User already exists" });
       }
 
       // create user
@@ -76,14 +75,10 @@ export const actions = {
       throw redirect(302, Routes.home);
     } catch (error) {
       // let SvelteKit handle redirects & HTTP errors
-      if (isRedirect(error) || isHttpError(error)) {
-        throw error;
-      }
+      skipRedirectAndHttpErrors(error);
 
       console.log("Signup error: ", error);
-      return fail(500, {
-        message: "something went wrong, please try again later",
-      });
+      return serverError();
     }
   },
 };
