@@ -1,5 +1,5 @@
 import prisma from "@/server/prisma";
-import { deleteSession, SESSION_COOKIE_NAME } from "@/server/session";
+import { deleteSession, SESSION_COOKIE_NAME } from "@/server/session.server.js";
 import type { Handle } from "@sveltejs/kit";
 
 export const handle: Handle = async ({ event, resolve }) => {

@@ -1,5 +1,5 @@
 import { Routes } from "@/data/routes.js";
-import { deleteSession } from "@/server/session.js";
+import { deleteSession } from "@/server/session.server.js";
 import { redirect } from "@sveltejs/kit";
 
 export const actions = {

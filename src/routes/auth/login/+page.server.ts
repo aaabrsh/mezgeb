@@ -1,6 +1,6 @@
 import { Routes } from "@/data/routes.js";
 import prisma from "@/server/prisma.js";
-import { createSession } from "@/server/session.js";
+import { createSession } from "@/server/session.server.js";
 import {
   fail,
   isHttpError,
