@@ -15,7 +15,7 @@
   import { fade } from "svelte/transition";
   import { FormGroup } from "@/components/ui/form-group";
 
-  const { data, form }: PageProps = $props();
+  let { form }: PageProps = $props();
 
   let pending = $state(false);
 </script>
@@ -33,6 +33,7 @@
       method="POST"
       use:enhance={() => {
         pending = true;
+        form = null;
 
         return async ({ update }) => {
           await update();
