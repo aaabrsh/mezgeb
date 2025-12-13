@@ -8,12 +8,21 @@
   import CurrencyList from "@/components/currency/currency-list.svelte";
   import type { Currency } from "@prisma/client";
   import CurrencyForm from "@/components/currency/currency-form.svelte";
+  import { toast } from "svelte-sonner";
 
   let { data, form } = $props();
   const global_currencies = $derived(data.global_currencies ?? []);
   const user_currencies = $derived(data.user_currencies ?? []);
 
   let currency_to_edit = $state<Currency | null>(null);
+  let ref: HTMLElement;
+
+  $effect(() => {
+    if (form?.message) {
+      const _toast = form.success ? toast.success : toast.error;
+      _toast(form.message);
+    }
+  });
 
   const handleFormClear = () => {
     form = null;
@@ -22,6 +31,7 @@
 
   const handleEditClick = (currency: Currency) => {
     currency_to_edit = currency;
+    ref.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
   const handleDeleteComplete = () => {
@@ -41,10 +51,14 @@
   <!-- currency form -->
   <Card>
     <CardHeader>
-      <CardTitle class="text-primary">Add New Currency</CardTitle>
+      <CardTitle class="text-primary"
+        >{currency_to_edit ? "Update currency" : "Add New Currency"}</CardTitle
+      >
     </CardHeader>
     <CardContent>
-      <CurrencyForm {currency_to_edit} {form} onClear={handleFormClear} />
+      <div bind:this={ref}>
+        <CurrencyForm {currency_to_edit} {form} onClear={handleFormClear} />
+      </div>
     </CardContent>
   </Card>
 
