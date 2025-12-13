@@ -27,6 +27,7 @@
   action={currency_to_edit ? "?/update" : "?/create"}
   use:enhance={({ formData }) => {
     form_pending = true;
+    form = null;
     if (currency_to_edit) {
       formData.append("id", currency_to_edit.id);
     }
@@ -90,7 +91,13 @@
       loading={form_pending}
     >
       {#if currency_to_edit}
-        Edit Currency
+        {#if form_pending}
+          Editing Currency...
+        {:else}
+          Edit Currency
+        {/if}
+      {:else if form_pending}
+        Adding Currency...
       {:else}
         Add Currency
       {/if}
