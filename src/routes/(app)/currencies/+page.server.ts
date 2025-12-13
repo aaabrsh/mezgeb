@@ -12,6 +12,8 @@ import {
 import type {
   CreateCurrencyActionFail,
   CreateCurrencyActionSuccess,
+  DeleteCurrencyActionFail,
+  DeleteCurrencyActionSuccess,
   UpdateCurrencyActionFail,
   UpdateCurrencyActionSuccess,
 } from "@/types/currency.type.js";
@@ -52,7 +54,7 @@ export const actions: Actions = {
       if (!parsed.success) {
         const errors = z.flattenError(parsed.error);
         return badRequestError({
-          message: "Invalid data provided",
+          message: "Invalid currency data provided",
           errors: errors.fieldErrors,
         });
       }
@@ -70,8 +72,9 @@ export const actions: Actions = {
       // create currency
       const newCurrency = await createCurrency(currency, user.id);
       return {
-        message: "Currency added",
-        currency: newCurrency,
+        message: "New currency added to your list.",
+        success: true,
+        data: { currency: newCurrency },
       };
     } catch (error) {
       skipRedirectAndHttpErrors(error);
@@ -98,7 +101,7 @@ export const actions: Actions = {
       if (!parsed.success) {
         const errors = z.flattenError(parsed.error);
         return badRequestError({
-          message: "Invalid data provided",
+          message: "Invalid currency data provided",
           errors: errors.fieldErrors,
         });
       }
@@ -114,7 +117,7 @@ export const actions: Actions = {
         const existing = await getCurrencyByAbbrev(currency.abbrev, user.id);
         if (existing && existing.id !== currencyId) {
           return badRequestError({
-            message: `Currency with abbreviation ${currency.abbrev} already exists`,
+            message: `Currency with abbreviation '${currency.abbrev}' already exists`,
           });
         }
       }
@@ -127,8 +130,9 @@ export const actions: Actions = {
       );
 
       return {
-        message: "Currency added",
-        currency: updatedCurrency,
+        message: "Your changes have been saved successfully.",
+        success: true,
+        data: { currency: updatedCurrency },
       };
     } catch (error) {
       skipRedirectAndHttpErrors(error);
@@ -137,7 +141,10 @@ export const actions: Actions = {
     }
   },
 
-  delete: async ({ request, locals }) => {
+  delete: async ({
+    request,
+    locals,
+  }): Promise<DeleteCurrencyActionSuccess | DeleteCurrencyActionFail> => {
     try {
       const data = await request.formData();
       const formData = Object.fromEntries(data);
@@ -149,6 +156,10 @@ export const actions: Actions = {
       }
 
       await deleteCurrency(currencyId, user.id);
+      return {
+        message: "The currency has been removed from your list.",
+        success: true,
+      };
     } catch (error) {
       skipRedirectAndHttpErrors(error);
       console.log("currency deletion error: ", error);
