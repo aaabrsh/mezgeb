@@ -1,18 +1,23 @@
 import type { CurrencyFormData } from "@/schemas/currency.schema";
 import type { Currency } from "@prisma/client";
-import type { ActionFailure } from "@sveltejs/kit";
+import type {
+  ActionFailureSimple,
+  ActionSuccess,
+  ActionValidationFailure,
+} from "@/types/action-result.type";
 
-export interface CreateCurrencyActionSuccess {
-  message: string;
-  currency: Currency;
-}
+export type CreateCurrencyActionSuccess = ActionSuccess<{ currency: Currency }>;
 
-export type CreateCurrencyActionFail = ActionFailure<{
-  message: string;
-  errors?: Partial<Record<keyof CurrencyFormData, string[]>>;
-}>;
+export type CreateCurrencyActionFail = ActionValidationFailure<
+  keyof CurrencyFormData
+>;
 
-export interface UpdateCurrencyActionSuccess
-  extends CreateCurrencyActionSuccess {}
+export type UpdateCurrencyActionSuccess = ActionSuccess<{ currency: Currency }>;
 
-export interface UpdateCurrencyActionFail extends CreateCurrencyActionFail {}
+export type UpdateCurrencyActionFail = ActionValidationFailure<
+  keyof CurrencyFormData
+>;
+
+export type DeleteCurrencyActionSuccess = ActionSuccess;
+
+export type DeleteCurrencyActionFail = ActionFailureSimple;
