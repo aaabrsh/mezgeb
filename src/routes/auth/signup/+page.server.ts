@@ -1,46 +1,22 @@
 import { Routes } from "@/data/routes.js";
+import { signupSchema, type SignupFormData } from "@/schemas/signup.schema";
 import prisma from "@/server/prisma";
 import { createSession } from "@/server/session.server.js";
+import type { ActionValidationFailure } from "@/types/action-result.type.js";
 import {
   badRequestError,
   serverError,
   skipRedirectAndHttpErrors,
 } from "@/utils/error-responses.js";
-import { redirect, type ActionFailure } from "@sveltejs/kit";
+import { redirect } from "@sveltejs/kit";
 import bcrypt from "bcrypt";
 import z from "zod";
-
-const signupSchema = z
-  .object({
-    full_name: z.string().trim().min(1, "User's full name is required"),
-    email: z
-      .email("Please enter a valid email address")
-      .trim()
-      .min(1, "Email is required"),
-    password: z
-      .string()
-      .trim()
-      .min(1, "Password is required")
-      .min(6, "Password must be at least 6 characters long"),
-    confirm_password: z.string().optional(),
-  })
-  .refine((data) => data.password === data.confirm_password, {
-    message: "Passwords do not match",
-    path: ["confirm_password"],
-  });
-
-export type SignupFormData = z.infer<typeof signupSchema>;
-
-export interface SignupFormFail {
-  message?: string;
-  errors?: Partial<Record<keyof SignupFormData, string[]>>;
-}
 
 export const actions = {
   default: async ({
     request,
     cookies,
-  }): Promise<ActionFailure<SignupFormFail> | void> => {
+  }): Promise<ActionValidationFailure<keyof SignupFormData> | void> => {
     try {
       const data = await request.formData();
       const formData = Object.fromEntries(data);
