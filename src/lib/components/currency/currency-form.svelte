@@ -4,7 +4,7 @@
   import { Label } from "@/components/ui/label";
   import { enhance } from "$app/forms";
   import { FormGroup } from "@/components/ui/form-group";
-  import type { Currency } from "@prisma/client";
+  import type { Currency } from "@prisma-generated/client";
   import type { ActionData } from "../../../routes/(app)/currencies/$types";
 
   type Props = {
@@ -44,7 +44,7 @@
 >
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
     <FormGroup>
-      <Label for="abbrev">Abbreviation</Label>
+      <Label for="abbrev" required>Abbreviation</Label>
       <Input
         id="abbrev"
         name="abbrev"

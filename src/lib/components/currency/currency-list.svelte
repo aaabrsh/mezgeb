@@ -2,7 +2,7 @@
   import { Card } from "@/components/ui/card";
   import { Button } from "@/components/ui/button";
   import { Pencil, Trash2 } from "@lucide/svelte";
-  import type { Currency } from "@prisma/client";
+  import type { Currency } from "@prisma-generated/client";
   import { enhance } from "$app/forms";
   import { cn } from "@/utils";
   import {

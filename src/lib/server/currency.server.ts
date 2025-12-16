@@ -1,6 +1,6 @@
 import type { CurrencyFormData } from "@/schemas/currency.schema";
 import prisma from "@/server/prisma";
-import type { Currency } from "@prisma/client";
+import type { Currency } from "@prisma-generated/client";
 
 export const getGlobalCurrencies = async (): Promise<Currency[]> => {
   return prisma.currency.findMany({

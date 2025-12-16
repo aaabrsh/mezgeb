@@ -1,15 +1,13 @@
-import { PrismaClient } from "@prisma/client";
-import { NODE_ENV } from "$env/static/private";
+import { PrismaClient } from "@prisma-generated/client";
+import { DATABASE_URL } from "$env/static/private";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-let prisma: PrismaClient;
+const adapter = new PrismaPg({
+  connectionString: DATABASE_URL,
+});
 
-if (NODE_ENV === "production") {
-  prisma = new PrismaClient();
-} else {
-  if (!(globalThis as any).prisma) {
-    (globalThis as any).prisma = new PrismaClient();
-  }
-  prisma = (globalThis as any).prisma;
-}
+const prisma = new PrismaClient({
+  adapter,
+});
 
 export default prisma;

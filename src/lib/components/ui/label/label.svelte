@@ -35,6 +35,6 @@
     <div class="text-neutral-600">(optional)</div>
   {/if}
   {#if required}
-    <div class="text-neutral-600">(Required)</div>
+    <div class="text-neutral-600">(required)</div>
   {/if}
 </LabelPrimitive.Root>

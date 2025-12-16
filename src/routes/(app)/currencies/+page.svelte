@@ -6,7 +6,7 @@
     CardTitle,
   } from "@/components/ui/card";
   import CurrencyList from "@/components/currency/currency-list.svelte";
-  import type { Currency } from "@prisma/client";
+  import type { Currency } from "@prisma-generated/client";
   import CurrencyForm from "@/components/currency/currency-form.svelte";
   import { toast } from "svelte-sonner";
 
@@ -51,9 +51,9 @@
   <!-- currency form -->
   <Card>
     <CardHeader>
-      <CardTitle class="text-primary"
-        >{currency_to_edit ? "Update currency" : "Add New Currency"}</CardTitle
-      >
+      <CardTitle class="text-primary">
+        {currency_to_edit ? "Update Currency" : "Add New Currency"}
+      </CardTitle>
     </CardHeader>
     <CardContent>
       <div bind:this={ref}>

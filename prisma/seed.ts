@@ -1,14 +1,22 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { Prisma, PrismaClient } from "../src/generated/prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL!,
+});
+
+const prisma = new PrismaClient({
+  adapter,
+});
+
+const globalCurrencies: Prisma.CurrencyCreateInput[] = [
+  { abbrev: "USD", name: "US Dollar", symbol: "$" },
+  { abbrev: "EUR", name: "Euro", symbol: "€" },
+  { abbrev: "ETB", name: "Ethiopian Birr", symbol: "Br" },
+  { abbrev: "GBP", name: "British Pound", symbol: "£" },
+];
 
 const main = async () => {
-  const globalCurrencies = [
-    { abbrev: "USD", name: "US Dollar", symbol: "$" },
-    { abbrev: "EUR", name: "Euro", symbol: "€" },
-    { abbrev: "ETB", name: "Ethiopian Birr", symbol: "Br" },
-    { abbrev: "GBP", name: "British Pound", symbol: "£" },
-  ];
-
   for (const currency of globalCurrencies) {
     const existing = await prisma.currency.findFirst({
       where: {
@@ -24,7 +32,7 @@ const main = async () => {
       });
     } else {
       await prisma.currency.create({
-        data: { ...currency, userId: null },
+        data: { ...currency, userId: undefined },
       });
     }
   }
