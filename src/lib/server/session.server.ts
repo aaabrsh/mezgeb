@@ -35,7 +35,7 @@ export const createSession = async (
 export const deleteSession = async (cookies: Cookies) => {
   const sessionId = cookies.get(SESSION_COOKIE_NAME);
   if (sessionId) {
-    await prisma.session.delete({ where: { id: sessionId } });
+    await prisma.session.delete({ where: { id: sessionId } }).catch(() => {});
   }
 
   cookies.delete(SESSION_COOKIE_NAME, { path: SESSION_COOKIE_PATH });

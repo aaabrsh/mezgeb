@@ -26,7 +26,7 @@ export const handle: Handle = async ({ event, resolve }) => {
         full_name: session.user.full_name,
       };
     } else {
-      deleteSession(event.cookies);
+      await deleteSession(event.cookies);
     }
   }
 
