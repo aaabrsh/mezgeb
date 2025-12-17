@@ -24,3 +24,9 @@ vite.config.ts.timestamp-*
 
 # Prisma generated files
 /src/generated
+
+# VS-Code
+.vscode
+
+# TODO
+TODO

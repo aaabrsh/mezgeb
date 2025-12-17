@@ -26,6 +26,12 @@
         >
           Currencies
         </a>
+        <a
+          class={page.url.pathname === Routes.categories ? "active" : ""}
+          href={Routes.categories}
+        >
+          Categories
+        </a>
       </div>
 
       <!-- Right side: User / Actions -->

@@ -4,4 +4,5 @@ export const Routes = {
   signup: "/auth/signup",
   logout: "/auth/logout",
   currencies: "/currencies",
+  categories: "/categories",
 };

@@ -1,7 +1,14 @@
 <script lang="ts">
-  let { children } = $props();
+  import { cn } from "@/utils";
+  import type { Snippet } from "svelte";
+
+  type Props = {
+    children: Snippet;
+    class?: string;
+  };
+  let { children, class: className }: Props = $props();
 </script>
 
-<div class="grid gap-2">
+<div class={cn("grid gap-2", className)}>
   {@render children()}
 </div>
