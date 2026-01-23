@@ -62,7 +62,7 @@ model Sent {
   id         String   @id @default(cuid())
   activity   Activity @relation(fields: [activityId], references: [id])
   activityId String   @unique
-  amount     Decimal
+  amount     Int // in cents
   currency   Currency @relation(fields: [currencyId], references: [id])
   currencyId String
 
@@ -74,7 +74,7 @@ model Received {
   id         String   @id @default(cuid())
   activity   Activity @relation(fields: [activityId], references: [id])
   activityId String   @unique
-  amount     Decimal
+  amount     Int // in cents
   currency   Currency @relation(fields: [currencyId], references: [id])
   currencyId String
 
@@ -86,7 +86,7 @@ model Moved {
   id         String   @id @default(cuid())
   activity   Activity @relation(fields: [activityId], references: [id])
   activityId String   @unique
-  amount     Decimal
+  amount     Int // in cents
   currency   Currency @relation(fields: [currencyId], references: [id])
   currencyId String
 
@@ -99,11 +99,11 @@ model Converted {
   activity       Activity @relation(fields: [activityId], references: [id])
   activityId     String   @unique
   // "from" fields
-  fromAmount     Decimal
+  fromAmount     Int // in cents
   fromCurrency   Currency @relation("fromCurrency", fields: [fromCurrencyId], references: [id])
   fromCurrencyId String
   // "to" fields
-  toAmount       Decimal
+  toAmount       Int // in cents
   toCurrency     Currency @relation("toCurrency", fields: [toCurrencyId], references: [id])
   toCurrencyId   String
 
@@ -118,12 +118,16 @@ model Account {
   name           String
   type           AccountType
   description    String?
-  balance        Decimal     @default(0)
+  balance        Int         @default(0) // stored in cents
+  currency       Currency    @relation(fields: [currencyId], references: [id])
+  currencyId     String
   activitiesFrom Activity[]  @relation("SourceAccount")
   activitiesTo   Activity[]  @relation("DestinationAccount")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([userId, name]) // Prevent duplicate accounts per user
 }
 
 model Currency {
@@ -135,9 +139,10 @@ model Currency {
   userId        String? // null for global currencies
   convertedFrom Converted[] @relation("fromCurrency")
   convertedTo   Converted[] @relation("toCurrency")
-  Sent          Sent[]
-  Received      Received[]
-  Moved         Moved[]
+  sent          Sent[]
+  received      Received[]
+  moved         Moved[]
+  accounts      Account[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -172,4 +177,5 @@ enum AccountType {
   BANK
   CRYPTO
   CASH
+  OTHER
 }
