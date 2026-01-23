@@ -31,7 +31,7 @@ export const load = async ({ locals }) => {
   // since we have auth guard in layout, we can assume user is present
   const user_currencies = await getCurrenciesForUser(
     locals.user?.id || "",
-    false
+    false,
   );
   return { global_currencies, user_currencies };
 };
@@ -109,7 +109,7 @@ export const actions: Actions = {
       const currency = parsed.data;
 
       // check if the currency exists
-      const existing = await getCurrencyById(currencyId);
+      const existing = await getCurrencyById(currencyId, user.id);
       if (!existing) {
         return notFoundError({ message: `Currency not found` });
       } else {
@@ -126,7 +126,7 @@ export const actions: Actions = {
       const updatedCurrency = await updateCurrency(
         currencyId,
         currency,
-        user.id
+        user.id,
       );
 
       return {

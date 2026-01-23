@@ -103,7 +103,7 @@ export const actions: Actions = {
       const category = parsed.data;
 
       // check duplicate
-      const existing = await getCategoryById(categoryId);
+      const existing = await getCategoryById(categoryId, user.id);
       if (!existing) {
         return notFoundError({ message: "Category not found" });
       } else {
@@ -119,7 +119,7 @@ export const actions: Actions = {
       const updatedCategory = await updateCategory(
         categoryId,
         category,
-        user.id
+        user.id,
       );
       return {
         message: "Your changes have been saved successfully.",

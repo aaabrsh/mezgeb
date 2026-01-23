@@ -11,7 +11,7 @@ export const getGlobalCurrencies = async (): Promise<Currency[]> => {
 
 export const getCurrenciesForUser = async (
   userId: string,
-  include_global = true
+  include_global = true,
 ): Promise<Currency[]> => {
   return prisma.currency.findMany({
     where: include_global ? { OR: [{ userId }, { userId: null }] } : { userId },
@@ -21,7 +21,7 @@ export const getCurrenciesForUser = async (
 
 export const getCurrencyByAbbrev = async (
   abbrev: string,
-  userId: string | null = null
+  userId: string | null = null,
 ): Promise<Currency | null> => {
   if (!userId)
     return prisma.currency.findFirst({
@@ -33,15 +33,18 @@ export const getCurrencyByAbbrev = async (
     });
 };
 
-export const getCurrencyById = async (id: string): Promise<Currency | null> => {
+export const getCurrencyById = async (
+  id: string,
+  userId: string,
+): Promise<Currency | null> => {
   return prisma.currency.findUnique({
-    where: { id },
+    where: { id, userId },
   });
 };
 
 export const createCurrency = async (
   data: CurrencyFormData,
-  userId: string
+  userId: string,
 ): Promise<Currency> => {
   return prisma.currency.create({
     data: { ...data, userId },
@@ -51,7 +54,7 @@ export const createCurrency = async (
 export const updateCurrency = async (
   currencyId: string,
   data: CurrencyFormData,
-  userId: string
+  userId: string,
 ): Promise<Currency> => {
   return prisma.currency.update({
     where: { id: currencyId, userId },
@@ -61,7 +64,7 @@ export const updateCurrency = async (
 
 export const deleteCurrency = (
   id: string,
-  userId: string
+  userId: string,
 ): Promise<Currency> => {
   return prisma.currency.delete({ where: { id, userId } });
 };
