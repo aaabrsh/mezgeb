@@ -7,12 +7,6 @@
   import * as Table from "$lib/components/ui/table/index.js";
   import { Spinner } from "@/components/ui/spinner";
 
-  //   TODO: expand props
-  /**
-   * 1. no data
-   * 2. loading
-   * 3. make sure it is responsive and looks good on both big and small screens
-   */
   type DataTableProps<TData, TValue> = {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
