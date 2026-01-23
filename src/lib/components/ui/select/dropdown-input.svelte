@@ -23,6 +23,8 @@
     name,
     ...restProps
   }: Props = $props();
+
+  let selectedItem = $derived(items.find((item) => item.value === value));
 </script>
 
 <div class="grid gap-1">
@@ -30,7 +32,7 @@
     <SelectTrigger
       class={cn("w-full", error && error.length > 0 ? "border-red-500" : "")}
     >
-      {value || placeholder}
+      {selectedItem?.label || placeholder}
     </SelectTrigger>
     <SelectContent>
       {#each items as { label, value, disabled = false }}
