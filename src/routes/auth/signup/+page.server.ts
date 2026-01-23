@@ -7,7 +7,7 @@ import {
   badRequestError,
   serverError,
   skipRedirectAndHttpErrors,
-} from "@/utils/error-responses.js";
+} from "@/utils/error-responses.util.js";
 import { redirect } from "@sveltejs/kit";
 import bcrypt from "bcrypt";
 import z from "zod";

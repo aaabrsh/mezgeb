@@ -21,7 +21,7 @@ import {
   notFoundError,
   serverError,
   skipRedirectAndHttpErrors,
-} from "@/utils/error-responses.js";
+} from "@/utils/error-responses.util.js";
 import { redirect, type Actions } from "@sveltejs/kit";
 import z from "zod";
 
