@@ -26,23 +26,24 @@
     files = $bindable(),
     class: className,
     error,
+    "data-slot": dataSlot = "input",
     ...restProps
   }: Props = $props();
 
   let showPassword = $state(false);
 </script>
 
-<div class="grid gap-1">
+<div class="grid gap-1 flex-1">
   {#if type === "file"}
     <input
       bind:this={ref}
-      data-slot="input"
+      data-slot={dataSlot}
       class={cn(
         "selection:bg-primary dark:bg-input/30 selection:text-primary-foreground border-input ring-offset-background placeholder:text-neutral-500 shadow-xs flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 pt-1.5 text-sm font-medium outline-none transition-[color,box-shadow] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
         "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
         "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
         error && error.length > 0 ? "border-red-500" : "",
-        className
+        className,
       )}
       type="file"
       bind:files
@@ -60,7 +61,7 @@
           "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
           "pr-10",
           error && error.length > 0 ? "border-red-500" : "",
-          className
+          className,
         )}
         type={showPassword ? "text" : "password"}
         bind:value
@@ -69,7 +70,7 @@
       <Button
         class={cn(
           "absolute top-0 right-0",
-          error && error.length > 0 ? "text-red-500" : ""
+          error && error.length > 0 ? "text-red-500" : "",
         )}
         variant="raw"
         onclick={() => (showPassword = !showPassword)}
@@ -84,13 +85,13 @@
   {:else}
     <input
       bind:this={ref}
-      data-slot="input"
+      data-slot={dataSlot}
       class={cn(
         "border-input selection:bg-primary dark:bg-input/30 selection:text-primary-foreground ring-offset-background placeholder:text-neutral-500 shadow-xs flex h-9 w-full min-w-0 rounded-md border px-3 py-1 text-base outline-none transition-[color,box-shadow] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
         "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
         "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
         error && error.length > 0 ? "border-red-500" : "",
-        className
+        className,
       )}
       {type}
       bind:value

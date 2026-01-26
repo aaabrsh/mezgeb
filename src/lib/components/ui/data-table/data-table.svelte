@@ -6,16 +6,23 @@
   } from "$lib/components/ui/data-table/index.js";
   import * as Table from "$lib/components/ui/table/index.js";
   import { Spinner } from "@/components/ui/spinner";
+  import { cn } from "@/utils";
 
   type DataTableProps<TData, TValue> = {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
     emptyText?: string;
     loading?: boolean;
+    headerClass?: string;
   };
 
-  let { data, columns, emptyText, loading }: DataTableProps<TData, TValue> =
-    $props();
+  let {
+    data,
+    columns,
+    emptyText,
+    loading,
+    headerClass,
+  }: DataTableProps<TData, TValue> = $props();
 
   const table = createSvelteTable({
     get data() {
@@ -28,7 +35,7 @@
 
 <div class="rounded-md border">
   <Table.Root>
-    <Table.Header>
+    <Table.Header class={cn(headerClass)}>
       {#each table.getHeaderGroups() as headerGroup (headerGroup.id)}
         <Table.Row>
           {#each headerGroup.headers as header (header.id)}

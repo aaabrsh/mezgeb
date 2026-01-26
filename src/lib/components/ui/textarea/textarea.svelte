@@ -5,26 +5,28 @@
 
   type Props = WithoutChildren<WithElementRef<HTMLTextareaAttributes>> & {
     error?: string | string[];
+    containerClass?: string;
   };
 
   let {
     ref = $bindable(null),
     value = $bindable(),
     class: className,
+    containerClass,
     "data-slot": dataSlot = "textarea",
     error,
     ...restProps
   }: Props = $props();
 </script>
 
-<div class="grid gap-1">
+<div class={cn("grid gap-1", containerClass)}>
   <textarea
     bind:this={ref}
     data-slot={dataSlot}
     class={cn(
-      "border-input placeholder:text-neutral-500 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+      "grow border-input placeholder:text-neutral-500 focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
       error && error.length > 0 ? "border-red-500" : "",
-      className
+      className,
     )}
     bind:value
     {...restProps}
