@@ -12,7 +12,10 @@
     BANK: { label: "Bank", class: "bg-green-500/20 text-green-500" },
     CRYPTO: { label: "Crypto", class: "bg-blue-500/20 text-blue-500" },
     CASH: { label: "Cash", class: "bg-purple-500/20 text-purple-500" },
-    OTHER: { label: "Other", class: "bg-gray-500/20 text-gray-500" },
+    OTHER: {
+      label: "Other",
+      class: "bg-gray-500/20 text-gray-500 dark:text-gray-400",
+    },
   };
 </script>
 
