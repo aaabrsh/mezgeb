@@ -118,7 +118,7 @@ model Account {
   name           String
   type           AccountType
   description    String?
-  balance        Int         @default(0) // stored in cents
+  balance        BigInt      @default(0) // stored in cents
   currency       Currency    @relation(fields: [currencyId], references: [id])
   currencyId     String
   activitiesFrom Activity[]  @relation("SourceAccount")

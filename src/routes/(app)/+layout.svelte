@@ -21,6 +21,12 @@
           href={Routes.home}>Home</a
         >
         <a
+          class={page.url.pathname === Routes.accounts ? "active" : ""}
+          href={Routes.accounts}
+        >
+          Accounts
+        </a>
+        <a
           class={page.url.pathname === Routes.currencies ? "active" : ""}
           href={Routes.currencies}
         >

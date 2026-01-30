@@ -3,6 +3,7 @@ export const Routes = {
   login: "/auth/login",
   signup: "/auth/signup",
   logout: "/auth/logout",
+  accounts: "/accounts",
   currencies: "/currencies",
   categories: "/categories",
 };
