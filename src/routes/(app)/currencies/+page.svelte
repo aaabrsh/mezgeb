@@ -9,6 +9,7 @@
   import type { Currency } from "@prisma-generated/client";
   import CurrencyForm from "@/components/currency/currency-form.svelte";
   import { toast } from "svelte-sonner";
+  import DefaultPageLayout from "@/components/layouts/default-page-layout.svelte";
 
   let { data, form } = $props();
   const global_currencies = $derived(data.global_currencies ?? []);
@@ -39,15 +40,10 @@
   };
 </script>
 
-<div class="max-w-4xl mx-auto px-4 py-10 space-y-8">
-  <!-- title -->
-  <div>
-    <h1 class="text-3xl font-bold text-primary">Currencies</h1>
-    <p class="text-neutral-600">
-      Update the list of currencies you keep balances in.
-    </p>
-  </div>
-
+<DefaultPageLayout
+  title="Currencies"
+  subtitle="Update the list of currencies you keep balances in."
+>
   <!-- currency form -->
   <Card>
     <CardHeader>
@@ -100,4 +96,4 @@
       {/if}
     </Card>
   {/if}
-</div>
+</DefaultPageLayout>

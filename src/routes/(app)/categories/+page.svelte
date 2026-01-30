@@ -1,6 +1,7 @@
 <script lang="ts">
   import CategoryForm from "@/components/category/category-form.svelte";
   import CategoryList from "@/components/category/category-list.svelte";
+  import DefaultPageLayout from "@/components/layouts/default-page-layout.svelte";
   import { Button } from "@/components/ui/button";
   import {
     Card,
@@ -52,15 +53,10 @@
   };
 </script>
 
-<div class="max-w-4xl mx-auto px-4 py-10 space-y-8">
-  <!-- title -->
-  <div>
-    <h1 class="text-3xl font-bold text-primary">Categories</h1>
-    <p class="text-neutral-600">
-      Categorize your activities to keep your finances organized
-    </p>
-  </div>
-
+<DefaultPageLayout
+  title="Categories"
+  subtitle="Categorize your activities to keep your finances organized"
+>
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
     <!-- Categories Form -->
     <Card class="col-span-1 h-fit">
@@ -123,4 +119,4 @@
       {/if}
     </Card>
   </div>
-</div>
+</DefaultPageLayout>

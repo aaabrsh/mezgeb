@@ -1,6 +1,7 @@
 <script lang="ts">
   import AccountForm from "@/components/account/account-form.svelte";
   import AccountList from "@/components/account/account-list.svelte";
+  import DefaultPageLayout from "@/components/layouts/default-page-layout.svelte";
   import {
     Card,
     CardContent,
@@ -43,15 +44,10 @@
   };
 </script>
 
-<div class="max-w-4xl mx-auto px-4 py-10 space-y-8">
-  <!-- title -->
-  <div>
-    <h1 class="text-3xl font-bold text-primary">Accounts</h1>
-    <p class="text-neutral-600">
-      Keep track of all the account you use to manage your finances.
-    </p>
-  </div>
-
+<DefaultPageLayout
+  title="Accounts"
+  subtitle="Keep track of all the account you use to manage your finances."
+>
   <!-- Accounts Form -->
   <Card>
     <CardHeader>
@@ -96,4 +92,4 @@
       </CardContent>
     {/if}
   </Card>
-</div>
+</DefaultPageLayout>
