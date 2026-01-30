@@ -1,5 +1,8 @@
 import { Routes } from "@/data/routes.js";
-import { categorySchema } from "@/schemas/category.schema.js";
+import {
+  categorySchema,
+  type CategoryFormData,
+} from "@/schemas/category.schema.js";
 import {
   createCategory,
   deleteCategory,
@@ -16,6 +19,7 @@ import type {
   UpdateCategoryActionFail,
   UpdateCategoryActionSuccess,
 } from "@/types/category.type.js";
+import { schemaValidationError } from "@/utils/error-responses.util.js";
 import {
   badRequestError,
   notFoundError,
@@ -23,7 +27,6 @@ import {
   skipRedirectAndHttpErrors,
 } from "@/utils/error-responses.util.js";
 import { redirect, type Actions } from "@sveltejs/kit";
-import z from "zod";
 
 export const load = async ({ locals }) => {
   const categories = await getCategoriesForUser(locals.user?.id || "");
@@ -46,11 +49,10 @@ export const actions: Actions = {
       }
 
       if (!parsed.success) {
-        const errors = z.flattenError(parsed.error);
-        return badRequestError({
-          message: "Invalid category data provided",
-          errors: errors.fieldErrors,
-        });
+        return schemaValidationError<CategoryFormData>(
+          parsed.error,
+          "Invalid category data provided",
+        );
       }
 
       const category = parsed.data;
@@ -93,11 +95,10 @@ export const actions: Actions = {
       }
 
       if (!parsed.success) {
-        const errors = z.flattenError(parsed.error);
-        return badRequestError({
-          message: "Invalid category data provided",
-          errors: errors.fieldErrors,
-        });
+        return schemaValidationError<CategoryFormData>(
+          parsed.error,
+          "Invalid category data provided",
+        );
       }
 
       const category = parsed.data;

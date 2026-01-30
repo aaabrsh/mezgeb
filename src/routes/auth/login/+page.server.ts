@@ -3,6 +3,7 @@ import { loginSchema, type LoginFormData } from "@/schemas/login.schema";
 import prisma from "@/server/prisma.js";
 import { createSession } from "@/server/session.server.js";
 import type { ActionValidationFailure } from "@/types/action-result.type";
+import { schemaValidationError } from "@/utils/error-responses.util";
 import {
   badRequestError,
   serverError,
@@ -10,7 +11,6 @@ import {
 } from "@/utils/error-responses.util";
 import { redirect, type Actions } from "@sveltejs/kit";
 import bcrypt from "bcrypt";
-import z from "zod";
 
 export const actions: Actions = {
   default: async ({
@@ -24,11 +24,7 @@ export const actions: Actions = {
       const parsed = loginSchema.safeParse(formData);
 
       if (!parsed.success) {
-        const errors = z.flattenError(parsed.error);
-        return badRequestError({
-          message: "Invalid data provided",
-          errors: errors.fieldErrors,
-        });
+        return schemaValidationError<LoginFormData>(parsed.error);
       }
 
       const { email, password } = parsed.data;

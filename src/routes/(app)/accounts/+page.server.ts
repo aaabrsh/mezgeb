@@ -1,5 +1,8 @@
 import { Routes } from "@/data/routes.js";
-import { accountSchema } from "@/schemas/account.schema.js";
+import {
+  accountSchema,
+  type AccountFormData,
+} from "@/schemas/account.schema.js";
 import {
   deleteAccount,
   formatAccounts,
@@ -20,7 +23,10 @@ import type {
   UpdateAccountActionFail,
   UpdateAccountActionSuccess,
 } from "@/types/account.type.js";
-import { notFoundError } from "@/utils/error-responses.util.js";
+import {
+  notFoundError,
+  schemaValidationError,
+} from "@/utils/error-responses.util.js";
 import {
   badRequestError,
   serverError,
@@ -28,7 +34,6 @@ import {
 } from "@/utils/error-responses.util.js";
 import { AccountType } from "@prisma-generated/enums.js";
 import { redirect, type Actions } from "@sveltejs/kit";
-import z from "zod";
 
 export const load = async ({ locals }) => {
   const accounts = await getAccountsForUser(locals.user?.id || "");
@@ -57,11 +62,10 @@ export const actions: Actions = {
       }
 
       if (!parsed.success) {
-        const errors = z.flattenError(parsed.error);
-        return badRequestError({
-          message: "Invalid account data provided",
-          errors: errors.fieldErrors,
-        });
+        return schemaValidationError<AccountFormData>(
+          parsed.error,
+          "Invalid account data provided",
+        );
       }
 
       const account = parsed.data;
@@ -104,11 +108,10 @@ export const actions: Actions = {
       }
 
       if (!parsed.success) {
-        const errors = z.flattenError(parsed.error);
-        return badRequestError({
-          message: "Invalid account data provided",
-          errors: errors.fieldErrors,
-        });
+        return schemaValidationError<AccountFormData>(
+          parsed.error,
+          "Invalid account data provided",
+        );
       }
 
       const account = parsed.data;

@@ -1,4 +1,5 @@
 import { fail, isHttpError, isRedirect } from "@sveltejs/kit";
+import z from "zod";
 
 type ErrorResponse = { message: string } & Record<string, any>;
 
@@ -20,4 +21,15 @@ export const skipRedirectAndHttpErrors = (error: any) => {
   if (isRedirect(error) || isHttpError(error)) {
     throw error;
   }
+};
+
+export const schemaValidationError = <T>(
+  errors: z.ZodError<T>,
+  message?: string,
+) => {
+  const flattened_errors = z.flattenError(errors);
+  return badRequestError({
+    message: message || "Invalid data provided",
+    errors: flattened_errors.fieldErrors,
+  });
 };

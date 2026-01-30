@@ -1,5 +1,8 @@
 import { Routes } from "@/data/routes";
-import { currencySchema } from "@/schemas/currency.schema";
+import {
+  currencySchema,
+  type CurrencyFormData,
+} from "@/schemas/currency.schema";
 import {
   createCurrency,
   deleteCurrency,
@@ -17,6 +20,7 @@ import type {
   UpdateCurrencyActionFail,
   UpdateCurrencyActionSuccess,
 } from "@/types/currency.type.js";
+import { schemaValidationError } from "@/utils/error-responses.util.js";
 import {
   badRequestError,
   notFoundError,
@@ -24,7 +28,6 @@ import {
   skipRedirectAndHttpErrors,
 } from "@/utils/error-responses.util.js";
 import { redirect, type Actions } from "@sveltejs/kit";
-import z from "zod";
 
 export const load = async ({ locals }) => {
   const global_currencies = await getGlobalCurrencies();
@@ -52,11 +55,10 @@ export const actions: Actions = {
       }
 
       if (!parsed.success) {
-        const errors = z.flattenError(parsed.error);
-        return badRequestError({
-          message: "Invalid currency data provided",
-          errors: errors.fieldErrors,
-        });
+        return schemaValidationError<CurrencyFormData>(
+          parsed.error,
+          "Invalid currency data provided",
+        );
       }
 
       const currency = parsed.data;
@@ -99,11 +101,10 @@ export const actions: Actions = {
       }
 
       if (!parsed.success) {
-        const errors = z.flattenError(parsed.error);
-        return badRequestError({
-          message: "Invalid currency data provided",
-          errors: errors.fieldErrors,
-        });
+        return schemaValidationError<CurrencyFormData>(
+          parsed.error,
+          "Invalid currency data provided",
+        );
       }
 
       const currency = parsed.data;

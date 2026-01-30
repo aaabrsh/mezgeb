@@ -5,12 +5,12 @@ import { createSession } from "@/server/session.server.js";
 import type { ActionValidationFailure } from "@/types/action-result.type.js";
 import {
   badRequestError,
+  schemaValidationError,
   serverError,
   skipRedirectAndHttpErrors,
 } from "@/utils/error-responses.util.js";
 import { redirect } from "@sveltejs/kit";
 import bcrypt from "bcrypt";
-import z from "zod";
 
 export const actions = {
   default: async ({
@@ -23,11 +23,7 @@ export const actions = {
       const parsed = signupSchema.safeParse(formData);
 
       if (!parsed.success) {
-        const errors = z.flattenError(parsed.error);
-        return badRequestError({
-          message: "Invalid data provided",
-          errors: errors.fieldErrors,
-        });
+        return schemaValidationError<SignupFormData>(parsed.error);
       }
 
       const { full_name, email, password } = parsed.data;
