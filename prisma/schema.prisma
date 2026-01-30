@@ -62,7 +62,7 @@ model Sent {
   id         String   @id @default(cuid())
   activity   Activity @relation(fields: [activityId], references: [id])
   activityId String   @unique
-  amount     Int // in cents
+  amount     BigInt // stored in cents
   currency   Currency @relation(fields: [currencyId], references: [id])
   currencyId String
 
@@ -74,7 +74,7 @@ model Received {
   id         String   @id @default(cuid())
   activity   Activity @relation(fields: [activityId], references: [id])
   activityId String   @unique
-  amount     Int // in cents
+  amount     BigInt // stored in cents
   currency   Currency @relation(fields: [currencyId], references: [id])
   currencyId String
 
@@ -86,7 +86,7 @@ model Moved {
   id         String   @id @default(cuid())
   activity   Activity @relation(fields: [activityId], references: [id])
   activityId String   @unique
-  amount     Int // in cents
+  amount     BigInt // stored in cents
   currency   Currency @relation(fields: [currencyId], references: [id])
   currencyId String
 
@@ -99,11 +99,11 @@ model Converted {
   activity       Activity @relation(fields: [activityId], references: [id])
   activityId     String   @unique
   // "from" fields
-  fromAmount     Int // in cents
+  fromAmount     BigInt // stored in cents
   fromCurrency   Currency @relation("fromCurrency", fields: [fromCurrencyId], references: [id])
   fromCurrencyId String
   // "to" fields
-  toAmount       Int // in cents
+  toAmount       BigInt // stored in cents
   toCurrency     Currency @relation("toCurrency", fields: [toCurrencyId], references: [id])
   toCurrencyId   String
 
