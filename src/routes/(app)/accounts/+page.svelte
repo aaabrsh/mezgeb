@@ -14,7 +14,6 @@
 
   let { data, form } = $props();
   let accounts = $derived(data.accounts);
-  let account_types = $derived(data.account_types);
   let currencies = $derived(data.currencies);
   let account_to_edit = $state<Account | null>(null);
   let ref: HTMLElement;
@@ -60,7 +59,6 @@
         <AccountForm
           {account_to_edit}
           {form}
-          {account_types}
           {currencies}
           onClear={handleFormClear}
         />

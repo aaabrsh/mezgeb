@@ -14,17 +14,17 @@
     InputGroupInput,
     InputGroupText,
   } from "@/components/ui/input-group";
+  import { AccountType } from "@prisma-generated/enums";
 
   type Props = {
     form: ActionData;
     account_to_edit: Account | null;
-    account_types: string[];
     currencies: Currency[];
     onClear: () => void;
   };
 
-  let { form, account_to_edit, account_types, currencies, onClear }: Props =
-    $props();
+  let { form, account_to_edit, currencies, onClear }: Props = $props();
+  let account_types = $state(Object.values(AccountType));
   let form_pending = $state(false);
   let selected_currency_id = $state<string>("");
   let selected_currency = $derived(

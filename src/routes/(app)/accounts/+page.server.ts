@@ -32,7 +32,6 @@ import {
   serverError,
   skipRedirectAndHttpErrors,
 } from "@/utils/error-responses.util.js";
-import { AccountType } from "@prisma-generated/enums.js";
 import { redirect, type Actions } from "@sveltejs/kit";
 
 export const load = async ({ locals }) => {
@@ -41,7 +40,6 @@ export const load = async ({ locals }) => {
 
   return {
     accounts: formatAccounts(accounts),
-    account_types: Object.values(AccountType),
     currencies,
   };
 };
