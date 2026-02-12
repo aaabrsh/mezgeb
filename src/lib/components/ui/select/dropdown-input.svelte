@@ -7,12 +7,14 @@
   } from "@/components/ui/select";
   import { cn } from "@/utils";
   import { Select as SelectPrimitive } from "bits-ui";
+  import type { Snippet } from "svelte";
   import { fade } from "svelte/transition";
 
   type Props = SelectPrimitive.RootProps & {
     items: { label: string; value: string; disabled?: boolean }[];
     placeholder?: string;
     error?: string | string[];
+    emptyDropdownMessage?: Snippet | string;
   };
 
   let {
@@ -21,6 +23,7 @@
     error,
     value = $bindable(),
     name,
+    emptyDropdownMessage,
     ...restProps
   }: Props = $props();
 
@@ -37,6 +40,26 @@
     <SelectContent>
       {#each items as { label, value, disabled = false }}
         <SelectItem {value} {disabled}>{label}</SelectItem>
+      {:else}
+        <!-- if we have a snippet to display -->
+        {#if emptyDropdownMessage && typeof emptyDropdownMessage === "function"}
+          <SelectItem
+            value={"no-results"}
+            disabled
+            class={"text-center font-semibold inline-block !px-2 data-[disabled]:opacity-100 data-[disabled]:pointer-events-auto"}
+          >
+            {@render emptyDropdownMessage()}
+          </SelectItem>
+        {:else}
+          <!-- display no options found message -->
+          <SelectItem
+            value={"no-results"}
+            disabled
+            class={"text-center font-semibold inline-block"}
+          >
+            {emptyDropdownMessage || "No options found"}
+          </SelectItem>
+        {/if}
       {/each}
     </SelectContent>
   </Select>

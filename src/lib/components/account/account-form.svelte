@@ -15,6 +15,8 @@
     InputGroupText,
   } from "@/components/ui/input-group";
   import { AccountType } from "@prisma-generated/enums";
+  import { Routes } from "@/data/routes";
+  import { SquareArrowOutUpRight } from "@lucide/svelte";
 
   type Props = {
     form: ActionData;
@@ -98,7 +100,22 @@
           bind:value={selected_currency_id}
           placeholder="Select Currency"
           error={form?.errors?.currencyId?.[0]}
-        />
+        >
+          {#snippet emptyDropdownMessage()}
+            <div class="grid gap-2">
+              <p class="text-muted-foreground/50">No Currencies Found</p>
+
+              <Button
+                href={Routes.currencies}
+                variant="outline"
+                class="w-full flex gap-2"
+              >
+                <span>Add a Currency</span>
+                <SquareArrowOutUpRight class="text-inherit" />
+              </Button>
+            </div>
+          {/snippet}
+        </DropdownInput>
       </FormGroup>
 
       <FormGroup>
