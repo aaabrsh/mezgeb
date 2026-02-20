@@ -33,18 +33,18 @@ model User {
 model Session {
   id     String @id @default(cuid())
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   expiresAt DateTime
   createdAt DateTime @default(now())
 }
 
 model Transaction {
-  id         String            @id @default(cuid())
-  type       TransactionType
-  status     TransactionStatus @default(COMPLETED)
-  tags Tag[]
-  notes      String?
+  id     String            @id @default(cuid())
+  type   TransactionType
+  status TransactionStatus @default(COMPLETED)
+  tags   Tag[]
+  notes  String?
 
   amount     BigInt
   currency   Currency    @relation(fields: [currencyId], references: [id], onDelete: Restrict)
