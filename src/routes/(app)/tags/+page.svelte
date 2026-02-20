@@ -1,6 +1,6 @@
 <script lang="ts">
-  import CategoryForm from "@/components/category/category-form.svelte";
-  import CategoryList from "@/components/category/category-list.svelte";
+  import TagForm from "@/components/tag/tag-form.svelte";
+  import TagList from "@/components/tag/tag-list.svelte";
   import DefaultPageLayout from "@/components/layouts/default-page-layout.svelte";
   import { Button } from "@/components/ui/button";
   import {
@@ -13,14 +13,14 @@
   } from "@/components/ui/card";
   import { cn } from "@/utils";
   import { MoonIcon, SunIcon } from "@lucide/svelte";
-  import type { Category } from "@prisma-generated/client";
+  import type { Tag } from "@prisma-generated/client";
   import { mode } from "mode-watcher";
   import { toast } from "svelte-sonner";
 
   let { data, form } = $props();
-  const categories = $derived(data.categories);
-  let category_to_edit = $state<Category | null>(null);
-  let categories_card_theme = $state(mode.current);
+  const tags = $derived(data.tags);
+  let tag_to_edit = $state<Tag | null>(null);
+  let tags_card_theme = $state(mode.current);
   let ref: HTMLElement;
 
   $effect(() => {
@@ -32,63 +32,62 @@
 
   const handleFormClear = () => {
     form = null;
-    category_to_edit = null;
+    tag_to_edit = null;
   };
 
-  const handleEditClick = (category: Category) => {
-    category_to_edit = category;
+  const handleEditClick = (tag: Tag) => {
+    tag_to_edit = tag;
     ref.scrollIntoView({ behavior: "smooth", block: "center" });
   };
 
-  const handleDeleteComplete = (categoryId: string) => {
-    if (category_to_edit?.id === categoryId) {
+  const handleDeleteComplete = (tagId: string) => {
+    if (tag_to_edit?.id === tagId) {
       form = null;
-      category_to_edit = null;
+      tag_to_edit = null;
     }
   };
 
-  const toggleCategoriesCardTheme = () => {
-    categories_card_theme =
-      categories_card_theme === "light" ? "dark" : "light";
+  const toggleTagsCardTheme = () => {
+    tags_card_theme = tags_card_theme === "light" ? "dark" : "light";
   };
 </script>
 
 <DefaultPageLayout
-  title="Categories"
-  subtitle="Categorize your activities to keep your finances organized"
+  title="Tags"
+  subtitle="Categorize your activities using tags to keep your finances organized"
 >
   <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-    <!-- Categories Form -->
+    <!-- Tags Form -->
     <Card class="col-span-1 h-fit">
       <CardHeader>
         <CardTitle class="text-primary">
-          {category_to_edit ? "Update Category" : "Add New Category"}
+          {tag_to_edit ? "Update Tag" : "Add New Tag"}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div bind:this={ref}>
-          <CategoryForm {category_to_edit} {form} onClear={handleFormClear} />
+          <TagForm {tag_to_edit} {form} onClear={handleFormClear} />
         </div>
       </CardContent>
     </Card>
 
-    <!-- Categories List -->
-    <Card class={cn("col-span-1 sm:col-span-2", categories_card_theme)}>
-      {#if categories.length === 0}
+    <!-- Tags List -->
+    <Card class={cn("col-span-1 sm:col-span-2", tags_card_theme)}>
+      {#if tags.length === 0}
         <CardHeader>
-          <CardTitle class="text-primary">No categories available</CardTitle>
+          <CardTitle class="text-primary">No tags available</CardTitle>
         </CardHeader>
 
         <CardContent class="text-neutral-600">
-          You haven't created any categories yet. Start by adding the first
-          category to organize your financial activities.
+          You haven't created any tags yet. Start by adding the first tag to
+          organize your financial activities.
         </CardContent>
       {:else}
         <CardHeader>
-          <CardTitle class="text-primary">Categories</CardTitle>
+          <CardTitle class="text-primary">Tags</CardTitle>
           <CardDescription>
-            All your categories in one place — customize them to match how you
-            manage your money
+            All your tags in one place — customize them to match how you manage
+            your money
           </CardDescription>
 
           <!-- Card Theme Toggle -->
@@ -97,7 +96,7 @@
               variant="raw"
               size="icon"
               class="text-primary dark:text-secondary relative"
-              onclick={toggleCategoriesCardTheme}
+              onclick={toggleTagsCardTheme}
             >
               <SunIcon
                 class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 !transition-all dark:-rotate-90 dark:scale-0"
@@ -110,8 +109,8 @@
         </CardHeader>
 
         <CardContent>
-          <CategoryList
-            {categories}
+          <TagList
+            {tags}
             onEdit={handleEditClick}
             onDeleteComplete={handleDeleteComplete}
           />

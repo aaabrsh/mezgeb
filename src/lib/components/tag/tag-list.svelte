@@ -1,35 +1,35 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
-  import CategoryBadge from "@/components/category/category-badge.svelte";
+  import TagBadge from "@/components/tag/tag-badge.svelte";
   import { ConfirmationModal } from "@/components/ui/confirmation-modal";
-  import type { Category } from "@prisma-generated/client";
+  import type { Tag } from "@prisma-generated/client";
 
   type Props = {
-    categories: Category[];
-    onEdit: (category: Category) => void;
+    tags: Tag[];
+    onEdit: (tag: Tag) => void;
     onDeleteComplete: (categroyId: string) => void;
   };
 
-  let { categories, onEdit, onDeleteComplete }: Props = $props();
+  let { tags, onEdit, onDeleteComplete }: Props = $props();
   let delete_pending: Record<string, boolean> = $state({});
   let data_to_delete = $state<string | null>(null);
   let deletion_form: HTMLFormElement;
 </script>
 
 <div class="flex gap-4 flex-wrap">
-  {#each categories as category (category.id)}
-    <CategoryBadge
-      {category}
+  {#each tags as tag (tag.id)}
+    <TagBadge
+      {tag}
       showEdit={true}
       {onEdit}
       showDelete={true}
-      loading={delete_pending[category.id]}
-      onDelete={(c) => (data_to_delete = c.id)}
+      loading={delete_pending[tag.id]}
+      onDelete={(tag) => (data_to_delete = tag.id)}
     />
   {/each}
 </div>
 
-<!-- Hidden Category Delete form to be triggered programmatically -->
+<!-- Hidden Tag Delete form to be triggered programmatically -->
 <form
   method="POST"
   action="?/delete"
@@ -56,6 +56,6 @@
   onClose={() => {
     data_to_delete = null;
   }}
-  title="Are you sure you want to delete this category?"
+  title="Are you sure you want to delete this tag?"
   loading={delete_pending[data_to_delete || ""]}
 />

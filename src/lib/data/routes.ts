@@ -5,5 +5,5 @@ export const Routes = {
   logout: "/auth/logout",
   accounts: "/accounts",
   currencies: "/currencies",
-  categories: "/categories",
+  tags: "/tags",
 };

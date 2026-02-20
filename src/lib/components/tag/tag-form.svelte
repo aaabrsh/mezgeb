@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { Category } from "@prisma-generated/client";
-  import type { ActionData } from "../../../routes/(app)/categories/$types";
+  import type { Tag } from "@prisma-generated/client";
+  import type { ActionData } from "../../../routes/(app)/tags/$types";
   import { enhance } from "$app/forms";
   import { FormGroup } from "@/components/ui/form-group";
   import { Label } from "@/components/ui/label";
@@ -9,23 +9,23 @@
 
   type Props = {
     form: ActionData;
-    category_to_edit: Category | null;
+    tag_to_edit: Tag | null;
     onClear: () => void;
   };
 
-  let { form, category_to_edit, onClear }: Props = $props();
+  let { form, tag_to_edit, onClear }: Props = $props();
   let form_pending = $state(false);
 </script>
 
 <form
   class="space-y-4"
-  action={category_to_edit ? "?/update" : "?/create"}
+  action={tag_to_edit ? "?/update" : "?/create"}
   method="POST"
   use:enhance={({ formData }) => {
     form_pending = true;
     form = null;
-    if (category_to_edit) {
-      formData.append("id", category_to_edit.id);
+    if (tag_to_edit) {
+      formData.append("id", tag_to_edit.id);
     }
 
     return async ({ update, result }) => {
@@ -33,7 +33,7 @@
       form_pending = false;
 
       if (result.type === "success") {
-        category_to_edit = null;
+        tag_to_edit = null;
       }
     };
   }}
@@ -45,7 +45,7 @@
       <Input
         id="name"
         name="name"
-        value={category_to_edit?.name}
+        value={tag_to_edit?.name}
         placeholder="Bill Payment"
         error={form?.errors?.name?.[0]}
       />
@@ -56,7 +56,7 @@
         id="color"
         name="color"
         type="color"
-        value={category_to_edit?.color}
+        value={tag_to_edit?.color}
         error={form?.errors?.color?.[0]}
       />
     </FormGroup>
@@ -75,16 +75,16 @@
       disabled={form_pending}
       loading={form_pending}
     >
-      {#if category_to_edit}
+      {#if tag_to_edit}
         {#if form_pending}
-          Editing Category...
+          Editing Tag...
         {:else}
-          Edit Category
+          Edit Tag
         {/if}
       {:else if form_pending}
-        Adding Category...
+        Adding Tag...
       {:else}
-        Add Category
+        Add Tag
       {/if}
     </Button>
   </div>

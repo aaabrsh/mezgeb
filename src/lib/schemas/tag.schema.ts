@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const categorySchema = z.object({
+export const tagSchema = z.object({
   name: z.string().min(1, "Name is required").max(20, "Name is too long"),
   color: z
     .string()
@@ -11,4 +11,4 @@ export const categorySchema = z.object({
     .transform((val) => val.toLowerCase()), // #fff or #ffffff format
 });
 
-export type CategoryFormData = z.infer<typeof categorySchema>;
+export type TagFormData = z.infer<typeof tagSchema>;

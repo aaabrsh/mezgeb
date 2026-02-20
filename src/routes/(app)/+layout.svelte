@@ -33,10 +33,10 @@
           Currencies
         </a>
         <a
-          class={page.url.pathname === Routes.categories ? "active" : ""}
-          href={Routes.categories}
+          class={page.url.pathname === Routes.tags ? "active" : ""}
+          href={Routes.tags}
         >
-          Categories
+          Tags
         </a>
       </div>
 

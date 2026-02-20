@@ -3,19 +3,19 @@
   import { Spinner } from "@/components/ui/spinner";
   import { cn } from "@/utils";
   import { Pencil, X } from "@lucide/svelte";
-  import type { Category } from "@prisma-generated/client";
+  import type { Tag } from "@prisma-generated/client";
 
   type Props = {
-    category: Category;
+    tag: Tag;
     loading?: boolean;
     showEdit?: boolean;
     showDelete?: boolean;
-    onEdit?: (category: Category) => void;
-    onDelete?: (category: Category) => void;
+    onEdit?: (tag: Tag) => void;
+    onDelete?: (tag: Tag) => void;
   };
 
   let {
-    category,
+    tag,
     loading = false,
     showEdit = false,
     onEdit,
@@ -23,24 +23,24 @@
     onDelete,
   }: Props = $props();
 
-  let bgColor = "bg-[color-mix(in_srgb,var(--category-color)_10%,transparent)]";
+  let bgColor = "bg-[color-mix(in_srgb,var(--tag-color)_10%,transparent)]";
   let borderColor =
-    "inset-ring inset-ring-[color-mix(in_srgb,var(--category-color)_70%,transparent)]";
-  let textColor = "text-[var(--category-color)]";
+    "inset-ring inset-ring-[color-mix(in_srgb,var(--tag-color)_70%,transparent)]";
+  let textColor = "text-[var(--tag-color)]";
   let textColorMuted =
-    "text-[color-mix(in_srgb,var(--category-color)_50%,transparent)]";
+    "text-[color-mix(in_srgb,var(--tag-color)_50%,transparent)]";
 </script>
 
 <div
-  style={`--category-color: ${category.color}`}
+  style={`--tag-color: ${tag.color}`}
   class={cn(
     "inline-flex items-center gap-2 rounded-2xl px-3 py-1 text-xs font-medium",
     bgColor,
     textColor,
-    borderColor
+    borderColor,
   )}
 >
-  {category.name}
+  {tag.name}
 
   {#if loading}
     <Spinner />
@@ -51,9 +51,9 @@
           variant="raw"
           class={cn(
             "p-0.5! m-0 w-auto h-auto opacity-40 hover:opacity-100",
-            textColor
+            textColor,
           )}
-          onclick={() => onEdit && onEdit(category)}
+          onclick={() => onEdit && onEdit(tag)}
         >
           <Pencil />
         </Button>
@@ -64,9 +64,9 @@
           variant="raw"
           class={cn(
             "p-0.5! m-0 w-auto h-auto opacity-40 hover:opacity-100",
-            textColor
+            textColor,
           )}
-          onclick={() => onDelete && onDelete(category)}
+          onclick={() => onDelete && onDelete(tag)}
         >
           <X />
         </Button>
