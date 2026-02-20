@@ -5,8 +5,9 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["partialIndexes"]
 }
 
 datasource db {
@@ -14,15 +15,16 @@ datasource db {
 }
 
 model User {
-  id             String     @id @default(cuid())
-  email          String     @unique()
+  id             String        @id @default(cuid())
+  email          String        @unique
   password       String
   full_name      String
   sessions       Session[]
-  activities     Activity[]
+  transactions   Transaction[]
   money_accounts Account[]
   currencies     Currency[]
-  categories     Category[]
+  tags           Tag[]
+  contacts       Contact[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -37,126 +39,107 @@ model Session {
   createdAt DateTime @default(now())
 }
 
-model Activity {
-  id                   String       @id @default(cuid())
-  user                 User         @relation(fields: [userId], references: [id])
-  userId               String
-  type                 ActivityType
-  categories           Category[]
-  notes                String?
-  sent                 Sent?
-  received             Received?
-  moved                Moved?
-  converted            Converted?
-  sourceAccount        Account?     @relation("SourceAccount", fields: [sourceAccountId], references: [id])
-  sourceAccountId      String?
-  destinationAccount   Account?     @relation("DestinationAccount", fields: [destinationAccountId], references: [id])
+model Transaction {
+  id         String            @id @default(cuid())
+  type       TransactionType
+  status     TransactionStatus @default(COMPLETED)
+  tags Tag[]
+  notes      String?
+
+  amount     BigInt
+  currency   Currency    @relation(fields: [currencyId], references: [id], onDelete: Restrict)
+  currencyId String
+  conversion Conversion?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  sourceAccount   Account? @relation("SourceAccount", fields: [sourceAccountId], references: [id], onDelete: SetNull)
+  sourceAccountId String?
+
+  destinationAccount   Account? @relation("DestinationAccount", fields: [destinationAccountId], references: [id], onDelete: SetNull)
   destinationAccountId String?
-  activityDate         DateTime     @default(now())
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  externalParty String? // For transaction involving external account (for money sent to or received from external source)
+  contactId     String? // For transaction with people saved as "contact"
+  contact       Contact? @relation(fields: [contactId], references: [id], onDelete: SetNull)
+
+  completedAt DateTime?
+  cancelledAt DateTime?
+  dueDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
-model Sent {
-  id         String   @id @default(cuid())
-  activity   Activity @relation(fields: [activityId], references: [id])
-  activityId String   @unique
-  amount     BigInt // stored in cents
-  currency   Currency @relation(fields: [currencyId], references: [id])
-  currencyId String
+model Conversion {
+  id            String      @id @default(uuid())
+  transactionId String      @unique
+  transaction   Transaction @relation(fields: [transactionId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Received {
-  id         String   @id @default(cuid())
-  activity   Activity @relation(fields: [activityId], references: [id])
-  activityId String   @unique
-  amount     BigInt // stored in cents
-  currency   Currency @relation(fields: [currencyId], references: [id])
-  currencyId String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Moved {
-  id         String   @id @default(cuid())
-  activity   Activity @relation(fields: [activityId], references: [id])
-  activityId String   @unique
-  amount     BigInt // stored in cents
-  currency   Currency @relation(fields: [currencyId], references: [id])
-  currencyId String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Converted {
-  id             String   @id @default(cuid())
-  activity       Activity @relation(fields: [activityId], references: [id])
-  activityId     String   @unique
-  // "from" fields
-  fromAmount     BigInt // stored in cents
-  fromCurrency   Currency @relation("fromCurrency", fields: [fromCurrencyId], references: [id])
   fromCurrencyId String
-  // "to" fields
-  toAmount       BigInt // stored in cents
-  toCurrency     Currency @relation("toCurrency", fields: [toCurrencyId], references: [id])
-  toCurrencyId   String
+  fromCurrency   Currency @relation(name: "fromCurrency", fields: [fromCurrencyId], references: [id], onDelete: Restrict)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  toCurrencyId String
+  toCurrency   Currency @relation(name: "toCurrency", fields: [toCurrencyId], references: [id], onDelete: Restrict)
+
+  rate       Decimal
+  fromAmount BigInt // the same as "amount" in transaction table
+  toAmount   BigInt
 }
 
 model Account {
-  id             String      @id @default(cuid())
-  user           User        @relation(fields: [userId], references: [id])
-  userId         String
-  name           String
-  type           AccountType
-  description    String?
-  balance        BigInt      @default(0) // stored in cents
-  currency       Currency    @relation(fields: [currencyId], references: [id])
-  currencyId     String
-  activitiesFrom Activity[]  @relation("SourceAccount")
-  activitiesTo   Activity[]  @relation("DestinationAccount")
+  id          String      @id @default(cuid())
+  name        String
+  type        AccountType
+  description String?
+  balance     BigInt      @default(0)
+  isArchived  Boolean     @default(false)
+  archivedAt  DateTime?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  currency   Currency @relation(fields: [currencyId], references: [id], onDelete: Restrict)
+  currencyId String
+
+  incomingTransactions Transaction[] @relation("SourceAccount")
+  outgoingTransactions Transaction[] @relation("DestinationAccount")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, name]) // Prevent duplicate accounts per user
+  @@unique([userId, name], where: raw("'isArchived' = 'false'")) // Prevent duplicate active accounts per user
 }
 
 model Currency {
-  id            String      @id @default(cuid())
-  abbrev        String
-  symbol        String?
-  name          String?
-  user          User?       @relation(fields: [userId], references: [id])
-  userId        String? // null for global currencies
-  convertedFrom Converted[] @relation("fromCurrency")
-  convertedTo   Converted[] @relation("toCurrency")
-  sent          Sent[]
-  received      Received[]
-  moved         Moved[]
+  id        String       @id @default(cuid())
+  code      String
+  symbol    String?
+  name      String?
+  type      CurrencyType
+  precision Int          @default(2) // ETB=2, USD=2, BTC=8, ETH=18 etc
+
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String? // null for global currencies
+
+  convertedFrom Conversion[]  @relation("fromCurrency")
+  convertedTo   Conversion[]  @relation("toCurrency")
+  transactions  Transaction[]
   accounts      Account[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, abbrev]) // Prevent duplicate abbreviations per user
+  @@unique([userId, code]) // Prevent duplicate currency codes per user
 }
 
-model Category {
-  id         String     @id @default(cuid())
-  name       String
-  color      String?
-  user       User       @relation(fields: [userId], references: [id])
-  userId     String
-  activities Activity[]
+model Tag {
+  id           String        @id @default(cuid())
+  name         String
+  color        String?
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  transactions Transaction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -164,18 +147,47 @@ model Category {
   @@unique([userId, name]) // Prevent duplicate names per user
 }
 
+model Contact {
+  id    String  @id @default(uuid())
+  name  String
+  email String?
+  phone String?
+  notes String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  transactions Transaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 //  ============== ENUMS ==============
 
-enum ActivityType {
+enum TransactionType {
   RECEIVE
   SEND
   MOVE
-  CONVERT
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+enum CurrencyType {
+  FIAT
+  CRYPTO
 }
 
 enum AccountType {
+  CASH
   BANK
   CRYPTO
-  CASH
+  CREDIT_CARD
+  SAVINGS
+  INVESTMENT
   OTHER
 }

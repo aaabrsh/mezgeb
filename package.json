@@ -28,7 +28,7 @@
 		"@types/pg": "^8.16.0",
 		"bits-ui": "^2.15.4",
 		"clsx": "^2.1.1",
-		"prisma": "^7.1.0",
+		"prisma": "^7.4.1",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
 		"svelte-sonner": "^1.0.7",
@@ -41,8 +41,8 @@
 		"vite": "^7.0.4"
 	},
 	"dependencies": {
-		"@prisma/adapter-pg": "^7.1.0",
-		"@prisma/client": "^7.1.0",
+		"@prisma/adapter-pg": "^7.4.1",
+		"@prisma/client": "^7.4.1",
 		"@prisma/extension-accelerate": "^2.0.2",
 		"bcrypt": "^6.0.0",
 		"dotenv": "^17.2.3",
