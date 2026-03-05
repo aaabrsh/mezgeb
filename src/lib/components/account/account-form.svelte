@@ -134,9 +134,9 @@
             value={account_to_edit?.balance || 0}
             placeholder="19.99"
           />
-          {#if selected_currency?.abbrev}
+          {#if selected_currency?.code}
             <InputGroupAddon align="inline-end">
-              <InputGroupText>{selected_currency?.abbrev}</InputGroupText>
+              <InputGroupText>{selected_currency?.code}</InputGroupText>
             </InputGroupAddon>
           {/if}
         </InputGroup>

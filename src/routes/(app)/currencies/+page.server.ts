@@ -7,7 +7,7 @@ import {
   createCurrency,
   deleteCurrency,
   getCurrenciesForUser,
-  getCurrencyByAbbrev,
+  getCurrencyByCode,
   getCurrencyById,
   getGlobalCurrencies,
   updateCurrency,
@@ -63,11 +63,11 @@ export const actions: Actions = {
 
       const currency = parsed.data;
 
-      // check if currency with same abbrev exists for user
-      const existing = await getCurrencyByAbbrev(currency.abbrev, user.id);
+      // check if currency with same code exists for user
+      const existing = await getCurrencyByCode(currency.code, user.id);
       if (existing) {
         return badRequestError({
-          message: `Currency with abbreviation ${currency.abbrev} already exists`,
+          message: `Currency with code ${currency.code} already exists`,
         });
       }
 
@@ -114,11 +114,11 @@ export const actions: Actions = {
       if (!existing) {
         return notFoundError({ message: `Currency not found` });
       } else {
-        // check if currency with same abbrev exists for user
-        const existing = await getCurrencyByAbbrev(currency.abbrev, user.id);
+        // check if currency with same code exists for user
+        const existing = await getCurrencyByCode(currency.code, user.id);
         if (existing && existing.id !== currencyId) {
           return badRequestError({
-            message: `Currency with abbreviation '${currency.abbrev}' already exists`,
+            message: `Currency with code '${currency.code}' already exists`,
           });
         }
       }

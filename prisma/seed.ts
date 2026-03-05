@@ -1,4 +1,8 @@
-import { Prisma, PrismaClient } from "../src/generated/prisma/client";
+import {
+  CurrencyType,
+  Prisma,
+  PrismaClient,
+} from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 const adapter = new PrismaPg({
@@ -10,17 +14,41 @@ const prisma = new PrismaClient({
 });
 
 const globalCurrencies: Prisma.CurrencyCreateInput[] = [
-  { abbrev: "USD", name: "US Dollar", symbol: "$" },
-  { abbrev: "EUR", name: "Euro", symbol: "€" },
-  { abbrev: "ETB", name: "Ethiopian Birr", symbol: "Br" },
-  { abbrev: "GBP", name: "British Pound", symbol: "£" },
+  {
+    code: "USD",
+    name: "US Dollar",
+    symbol: "$",
+    type: CurrencyType.FIAT,
+    precision: 2,
+  },
+  {
+    code: "EUR",
+    name: "Euro",
+    symbol: "€",
+    type: CurrencyType.FIAT,
+    precision: 2,
+  },
+  {
+    code: "ETB",
+    name: "Ethiopian Birr",
+    symbol: "Br",
+    type: CurrencyType.FIAT,
+    precision: 2,
+  },
+  {
+    code: "GBP",
+    name: "British Pound",
+    symbol: "£",
+    type: CurrencyType.FIAT,
+    precision: 2,
+  },
 ];
 
 const main = async () => {
   for (const currency of globalCurrencies) {
     const existing = await prisma.currency.findFirst({
       where: {
-        abbrev: currency.abbrev,
+        code: currency.code,
         userId: null,
       },
     });

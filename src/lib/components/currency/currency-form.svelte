@@ -44,13 +44,13 @@
 >
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
     <FormGroup>
-      <Label for="abbrev" required>Abbreviation</Label>
+      <Label for="code" required>Code</Label>
       <Input
-        id="abbrev"
-        name="abbrev"
-        value={currency_to_edit?.abbrev}
+        id="code"
+        name="code"
+        value={currency_to_edit?.code}
         placeholder="USD"
-        error={form?.errors?.abbrev?.[0]}
+        error={form?.errors?.code?.[0]}
       />
     </FormGroup>
 

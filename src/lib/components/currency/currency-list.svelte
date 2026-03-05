@@ -28,7 +28,7 @@
   {#each currencies as currency (currency.id)}
     <Item variant={currency.userId ? "outline" : "muted"} class="wifull">
       <ItemContent>
-        <ItemTitle class="text-primary">{currency.abbrev}</ItemTitle>
+        <ItemTitle class="text-primary">{currency.code}</ItemTitle>
         <ItemDescription class="text-neutral-600">
           {currency.name || "-"}
         </ItemDescription>

@@ -5,7 +5,7 @@ import type { Currency } from "@prisma-generated/client";
 export const getGlobalCurrencies = async (): Promise<Currency[]> => {
   return prisma.currency.findMany({
     where: { userId: null },
-    orderBy: { abbrev: "asc" },
+    orderBy: { code: "asc" },
   });
 };
 
@@ -19,17 +19,17 @@ export const getCurrenciesForUser = async (
   });
 };
 
-export const getCurrencyByAbbrev = async (
-  abbrev: string,
+export const getCurrencyByCode = async (
+  code: string,
   userId: string | null = null,
 ): Promise<Currency | null> => {
   if (!userId)
     return prisma.currency.findFirst({
-      where: { abbrev, userId: null },
+      where: { code, userId: null },
     });
   else
     return prisma.currency.findUnique({
-      where: { userId_abbrev: { abbrev, userId } },
+      where: { userId_code: { code: code, userId } },
     });
 };
 
